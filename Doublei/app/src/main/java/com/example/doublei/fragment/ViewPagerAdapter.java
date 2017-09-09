@@ -1,4 +1,4 @@
-package com.example.doublei.fragment;
+package com.example.doublei.Fragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,6 +36,4 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return tabTitles.get(position);
     }
-
-
 }

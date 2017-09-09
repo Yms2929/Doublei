@@ -122,5 +122,4 @@ abstract class VerticalScrollingBehavior<V extends View> extends CoordinatorLayo
     public Parcelable onSaveInstanceState(CoordinatorLayout parent, V child) {
         return super.onSaveInstanceState(parent, child);
     }
-
 }

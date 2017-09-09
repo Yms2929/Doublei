@@ -1,4 +1,4 @@
-package com.example.doublei.fragment;
+package com.example.doublei.Fragment;
 
 import android.content.Intent;
 import android.graphics.drawable.TransitionDrawable;
@@ -32,7 +32,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home,container,false);
         imageView=(ImageView) view.findViewById(R.id.faceimage);
         btnFace = (Button) view.findViewById(R.id.eye);
-        ToastImage = (Button) view.findViewById(R.id.toast);
+//        ToastImage = (Button) view.findViewById(R.id.toast);
         btnFace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,12 +51,12 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        ToastImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showToast();
-            }
-        });
+//        ToastImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showToast();
+//            }
+//        });
 
         return view;
     }

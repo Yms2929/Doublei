@@ -1,4 +1,4 @@
-package com.example.doublei.fragment;
+package com.example.doublei.Fragment;
 
 import android.content.Context;
 import android.os.Bundle;

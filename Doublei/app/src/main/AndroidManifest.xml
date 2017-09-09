@@ -44,7 +44,10 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".ChildPicture" />
-        <service android:name=".BackgroundService"></service>
+
+        <service android:name=".BackgroundService" />
+
+        <activity android:name=".Setting.Profile"></activity>
     </application>
 
 </manifest>

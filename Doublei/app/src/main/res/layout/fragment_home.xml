@@ -28,11 +28,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <Button
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:id="@+id/toast"
-        android:background="#000000"
-        android:textColor="#FFFFFF"
-        android:text="Toast"/>
+    <!--<Button-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:id="@+id/toast"-->
+        <!--android:background="#000000"-->
+        <!--android:textColor="#FFFFFF"-->
+        <!--android:text="Toast"/>-->
 </RelativeLayout>

@@ -265,7 +265,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     }
 
     @Override
-    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) { // 카메라 프레임
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
 
@@ -376,7 +376,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         return mRgba;
     }
 
-    public void showNotification(double distance) {
+    public void showNotification(double distance) { // 팝업 알림
         if(distance > 80.0) {
             android.support.v4.app.NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(this)

@@ -7,10 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.example.doublei.Bar.NavigationTabBar;
-import com.example.doublei.fragment.FirstFragment;
-import com.example.doublei.fragment.HomeFragment;
-import com.example.doublei.fragment.SecondFragment;
-import com.example.doublei.fragment.ViewPagerAdapter;
+import com.example.doublei.Fragment.SecondFragment;
+import com.example.doublei.Fragment.FirstFragment;
+import com.example.doublei.Fragment.HomeFragment;
+import com.example.doublei.Fragment.ViewPagerAdapter;
 
 import java.util.ArrayList;
 
@@ -100,5 +100,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 500);
     }
-
 }
