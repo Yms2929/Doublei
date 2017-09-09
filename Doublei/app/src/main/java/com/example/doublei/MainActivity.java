@@ -1,18 +1,16 @@
 package com.example.doublei;
 
-import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.example.doublei.Bar.NavigationTabBar;
 import com.example.doublei.fragment.FirstFragment;
 import com.example.doublei.fragment.HomeFragment;
 import com.example.doublei.fragment.SecondFragment;
 import com.example.doublei.fragment.ViewPagerAdapter;
-
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import java.util.ArrayList;
 

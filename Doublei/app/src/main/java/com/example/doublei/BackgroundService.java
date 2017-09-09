@@ -201,7 +201,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
         mParams.width = cameraWidth;
         mParams.height = cameraHeight;
-        mParams.gravity = Gravity.LEFT | Gravity.TOP;
+        mParams.gravity = Gravity.RIGHT | Gravity.TOP;
 
         mManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mManager.addView(mPopupView, mParams);
