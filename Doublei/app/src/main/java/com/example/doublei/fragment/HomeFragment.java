@@ -38,13 +38,15 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view){
                 if(buttonOnOff==Off) {
-                    imageView.setImageResource(R.drawable.trans_girlon);
-                    ((TransitionDrawable) imageView.getDrawable()).startTransition(1000);
+                    imageView.setImageResource(R.drawable.trans_eyebuttonon);
+                    ((TransitionDrawable) imageView.getDrawable()).startTransition(300);
+                    btnFace.setBackgroundResource(R.drawable.connect);
                     buttonOnOff=On;
                 }
                 else if(buttonOnOff==On){
-                    imageView.setImageResource(R.drawable.trans_girloff);
-                    ((TransitionDrawable) imageView.getDrawable()).startTransition(1000);
+                    imageView.setImageResource(R.drawable.trans_eyebuttonoff);
+                    ((TransitionDrawable) imageView.getDrawable()).startTransition(300);
+                    btnFace.setBackgroundResource(R.drawable.disconnect);
                     buttonOnOff=Off;
                 }
             }
