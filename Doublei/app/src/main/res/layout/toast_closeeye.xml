@@ -15,7 +15,7 @@
         android:id="@+id/toastText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="핸드폰이 너무 가까워요!"
+        android:text="스마트폰이 너무 가까워요!"
         android:layout_below="@+id/toastImage"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

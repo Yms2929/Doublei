@@ -1,9 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.doublei.Setting.Profile">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginStart="35dp"
+        android:textSize="30dp"
+        android:background="@color/color_Green"
+        android:textColor="@color/color_white"
+        android:text="이름"
+        android:layout_marginTop="130dp" />
+
+    <TextView
+        android:id="@+id/age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:background="@color/color_Green"
+        android:textColor="@color/color_white"
+        android:text="나이"
+        android:layout_below="@+id/editText2"
+        android:layout_alignLeft="@+id/sex"
+        android:layout_alignStart="@+id/sex"
+        android:layout_marginTop="35dp" />
+
+    <TextView
+        android:id="@+id/sex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:background="@color/color_Green"
+        android:textColor="@color/color_white"
+        android:text="성별"
+        android:layout_below="@+id/editText"
+        android:layout_alignLeft="@+id/name"
+        android:layout_alignStart="@+id/name"
+        android:layout_marginTop="45dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="입력"
+        android:id="@+id/editText"
+        android:layout_alignBaseline="@+id/name"
+        android:layout_alignBottom="@+id/name"
+        android:layout_alignLeft="@+id/button"
+        android:layout_alignStart="@+id/button" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5"
+        android:id="@+id/editText3"
+        android:layout_alignTop="@+id/age"
+        android:layout_alignRight="@+id/editText"
+        android:layout_alignEnd="@+id/editText"
+        android:layout_alignLeft="@+id/editText"
+        android:layout_alignStart="@+id/editText" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText2"
+        android:text="여자"
+        android:layout_alignBaseline="@+id/sex"
+        android:layout_alignBottom="@+id/sex"
+        android:layout_alignRight="@+id/editText3"
+        android:layout_alignEnd="@+id/editText3" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="프로필 수정"
+        android:background="@color/color_LightGreen"
+        android:textColor="@color/color_black"
+        android:textSize="30dp"
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/sex"
+        android:layout_toEndOf="@+id/sex"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp" />
+</RelativeLayout>

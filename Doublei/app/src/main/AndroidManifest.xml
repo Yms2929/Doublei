@@ -47,7 +47,8 @@
 
         <service android:name=".BackgroundService" />
 
-        <activity android:name=".Setting.Profile"></activity>
+        <activity android:name=".Setting.Profile" />
+        <activity android:name=".Setting.Alarm"></activity>
     </application>
 
 </manifest>
