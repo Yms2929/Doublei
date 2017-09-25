@@ -1,4 +1,4 @@
-package com.example.doublei;
+package com.example.doublei.Etc;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -11,6 +11,9 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
+
+import com.example.doublei.BackgroundService;
+import com.example.doublei.R;
 
 /**
  * Implementation of App Widget functionality.

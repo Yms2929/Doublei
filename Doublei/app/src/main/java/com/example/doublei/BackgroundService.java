@@ -230,6 +230,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                         resultName.setText(tempName);
                         break;
                     case 2:
+
                         break;
                     default:
                         break;
@@ -385,9 +386,11 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
                 Imgproc.threshold(inputGrayImage, inputGrayImage, 0, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU); // 이진화 OTSU
 
-                Strabismus(inputGrayImage); // 사시 진단
+                if (Strabismus(inputGrayImage)) {
+                    SaveBmp(inputGrayImage, mPath); // 이미지 저장
+                }
 
-                SaveBmp(inputGrayImage, mPath); // 이미지 저장
+//                Strabismus(inputGrayImage); // 사시 진단
             }
         }
 

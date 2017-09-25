@@ -1,4 +1,4 @@
-package com.example.doublei;
+package com.example.doublei.Etc;
 
 public class Singleton {
     private boolean switchValue;

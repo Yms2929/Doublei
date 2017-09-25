@@ -50,7 +50,7 @@
         <activity android:name=".Setting.Profile" />
         <activity android:name=".Setting.Alarm" />
 
-        <receiver android:name=".Widget">
+        <receiver android:name=".Etc.Widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.example.doublei.CLICK" />
