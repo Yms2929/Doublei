@@ -1,8 +1,12 @@
 package com.example.doublei.Fragment;
 
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,14 +18,15 @@ import android.widget.Toast;
 
 import com.example.doublei.BackgroundService;
 import com.example.doublei.R;
+import com.example.doublei.Singleton;
+import com.example.doublei.Widget;
 
 public class HomeFragment extends Fragment {
     ImageView imageView;
-    boolean buttonOnOff = false;
-    boolean Off = false;
-    boolean On = true;
+    public boolean value;
     Button btnFace;
     Button ToastImage;
+    int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -36,17 +41,44 @@ public class HomeFragment extends Fragment {
         btnFace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(buttonOnOff == Off) {
-                    imageView.setImageResource(R.drawable.trans_girlon);
-                    ((TransitionDrawable) imageView.getDrawable()).startTransition(1000);
-                    buttonOnOff = On;
-                    getActivity().startService(new Intent(getActivity(), BackgroundService.class));
-                }
-                else if(buttonOnOff == On) {
+                final Context context = getActivity().getApplicationContext();
+                AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
+                value = Singleton.getInstance().getSwitchValue();
+
+                if(value){
+                    Toast.makeText(getActivity().getApplicationContext(), "백그라운드 작업이 종료됩니다.",Toast.LENGTH_LONG).show();
+
+                    value = false;
+                    Singleton.getInstance().setSwitchValue(value);
+
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean("widgetOn", false);
+                    editor.commit();
+
+                    Widget.updateWidget(context,widgetManager,appWidgetId);
+
                     imageView.setImageResource(R.drawable.trans_girloff);
                     ((TransitionDrawable) imageView.getDrawable()).startTransition(1000);
-                    buttonOnOff = Off;
+
                     getActivity().stopService(new Intent(getActivity(), BackgroundService.class));
+                }
+                else {
+                    Toast.makeText(getActivity().getApplicationContext(), "백그라운드 작업이 실행됩니다.",Toast.LENGTH_LONG).show();
+                    value = true;
+                    Singleton.getInstance().setSwitchValue(value);
+
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean("widgetOn", true);
+                    editor.commit();
+
+                    Widget.updateWidget(context,widgetManager,appWidgetId);
+
+                    imageView.setImageResource(R.drawable.trans_girlon);
+                    ((TransitionDrawable) imageView.getDrawable()).startTransition(1000);
+
+                    getActivity().startService(new Intent(getActivity(), BackgroundService.class));
                 }
             }
         });

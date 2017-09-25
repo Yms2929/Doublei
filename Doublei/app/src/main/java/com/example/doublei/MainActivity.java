@@ -1,5 +1,7 @@
 package com.example.doublei;
 
+import android.appwidget.AppWidgetManager;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -7,9 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.example.doublei.Bar.NavigationTabBar;
-import com.example.doublei.Fragment.SecondFragment;
 import com.example.doublei.Fragment.FirstFragment;
 import com.example.doublei.Fragment.HomeFragment;
+import com.example.doublei.Fragment.SecondFragment;
 import com.example.doublei.Fragment.ViewPagerAdapter;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     String SignUp = "false";
     ViewPagerAdapter viewPagerAdapter;
     Toolbar toolbar;
+    int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,13 @@ public class MainActivity extends AppCompatActivity {
 //            startActivity(intent);
 //        }
         toolbar = (Toolbar)findViewById(R.id.main_toolbar);
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+
+        if(extras != null){
+            appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        }
+
         setSupportActionBar(toolbar);
         initUI();
     }
