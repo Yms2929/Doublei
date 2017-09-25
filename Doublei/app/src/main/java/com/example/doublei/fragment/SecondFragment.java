@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.doublei.R;
+import com.example.doublei.Setting.Hospital;
 import com.example.doublei.Setting.Profile;
 
 /**
@@ -56,6 +57,7 @@ public class SecondFragment extends Fragment {
                     case 2:
                         break;
                     case 3:
+                        startActivity(new Intent(getActivity(), Hospital.class));
                         break;
                     case 4:
                         break;
