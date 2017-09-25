@@ -60,6 +60,8 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     private boolean faceState = false;
     private Mat mRgba;
     private Mat mGray;
+    private Mat mRgbaT;
+    private Mat mGrayT;
     private File mCascadeFile;
     private File mCascadeFileEye;
     private CascadeClassifier mJavaDetector;
@@ -222,8 +224,16 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) { // 메세지 받아서 동작
-                String tempName = msg.obj.toString();
-                resultName.setText(tempName);
+                switch (msg.what) {
+                    case 1:
+                        String tempName = msg.obj.toString();
+                        resultName.setText(tempName);
+                        break;
+                    case 2:
+                        break;
+                    default:
+                        break;
+                }
             }
         };
 
@@ -270,13 +280,13 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
 
-        Mat rgbaT = mRgba.t();
-        Core.flip(mRgba.t(), rgbaT, -1);
-        Imgproc.resize(rgbaT, rgbaT, mRgba.size());
+        mRgbaT = mRgba.t();
+        Core.flip(mRgba.t(), mRgbaT, -1);
+        Imgproc.resize(mRgbaT, mRgbaT, mRgba.size());
 
-        Mat grayT = mGray.t();
-        Core.flip(mGray.t(), grayT, -1);
-        Imgproc.resize(grayT, grayT, mGray.size());
+        mGrayT = mGray.t();
+        Core.flip(mGray.t(), mGrayT, -1);
+        Imgproc.resize(mGrayT, mGrayT, mGray.size());
 
         if (mAbsoluteFaceSize == 0) {
             int height = mGray.rows();
@@ -347,7 +357,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
                 Rect eyearea = new Rect(r.x + r.width/6, (int)(r.y + r.height/1.8), (int)(r.width - r.width/2.5), (int)(r.height/3.5)); // 검출된 눈 영역 크기 조절
 
-                Imgproc.rectangle(rgbaT, eyearea.tl(), eyearea.br(), EYES_RECT_COLOR, 2); // 조절된 눈 영역 사각형으로 그리기
+                Imgproc.rectangle(mRgba, eyearea.tl(), eyearea.br(), EYES_RECT_COLOR, 2); // 조절된 눈 영역 사각형으로 그리기
 
                 if (i == 0) {
                     leftEyePosition = r.x;
@@ -363,7 +373,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
                 showNotification(distance); // 거리 판단
 
-                Mat inputGrayImage = grayT.submat(eyearea); // 그레이 이미지
+                Mat inputGrayImage = mGray.submat(eyearea); // 그레이 이미지
 
                 Imgproc.threshold(inputGrayImage, inputGrayImage, 0, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU); // 이진화 OTSU
 
@@ -373,7 +383,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
             }
         }
 
-        return rgbaT;
+        return mRgbaT;
     }
 
     public void showNotification(double distance) { // 팝업 알림
