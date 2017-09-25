@@ -234,6 +234,14 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         }
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId){
+        // TODO Auto-generated method stub
+
+        startForeground(1, new Notification());
+        return super.onStartCommand(intent, flags, startId);
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
