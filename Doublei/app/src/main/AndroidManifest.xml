@@ -48,7 +48,18 @@
         <service android:name=".BackgroundService" />
 
         <activity android:name=".Setting.Profile" />
-        <activity android:name=".Setting.Alarm"></activity>
+        <activity android:name=".Setting.Alarm" />
+
+        <receiver android:name=".Widget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.doublei.CLICK" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
     </application>
 
 </manifest>
