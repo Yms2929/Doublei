@@ -26,6 +26,7 @@ import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.DMatch;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDMatch;
@@ -269,13 +270,13 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
 
-//        Mat rgbaT = mRgba.t();
-//        Core.flip(mRgba.t(), rgbaT, -1);
-//        Imgproc.resize(rgbaT, rgbaT, mRgba.size());
-//
-//        Mat grayT = mGray.t();
-//        Core.flip(mGray.t(), grayT, -1);
-//        Imgproc.resize(grayT, grayT, mGray.size());
+        Mat rgbaT = mRgba.t();
+        Core.flip(mRgba.t(), rgbaT, -1);
+        Imgproc.resize(rgbaT, rgbaT, mRgba.size());
+
+        Mat grayT = mGray.t();
+        Core.flip(mGray.t(), grayT, -1);
+        Imgproc.resize(grayT, grayT, mGray.size());
 
         if (mAbsoluteFaceSize == 0) {
             int height = mGray.rows();
@@ -346,34 +347,33 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
                 Rect eyearea = new Rect(r.x + r.width/6, (int)(r.y + r.height/1.8), (int)(r.width - r.width/2.5), (int)(r.height/3.5)); // 검출된 눈 영역 크기 조절
 
-                Imgproc.rectangle(mRgba, eyearea.tl(), eyearea.br(), EYES_RECT_COLOR, 2); // 조절된 눈 영역 사각형으로 그리기
+                Imgproc.rectangle(rgbaT, eyearea.tl(), eyearea.br(), EYES_RECT_COLOR, 2); // 조절된 눈 영역 사각형으로 그리기
 
-//                if (i == 0) {
-//                    leftEyePosition = r.x;
-//                    Log.e("Distance 1", String.valueOf(leftEyePosition));
-//                }
-//                else if (i == 1) {
-//                    rightEyePosition = r.x;
-//                    Log.e("Distance 2", String.valueOf(rightEyePosition));
-//
-//                    distance = Math.abs(leftEyePosition - rightEyePosition);
-//                    Log.e("Distance 3", String.valueOf(distance));
-//                }
-//
-//                showNotification(distance); // 거리 판단
+                if (i == 0) {
+                    leftEyePosition = r.x;
+                    Log.e("Distance 1", String.valueOf(leftEyePosition));
+                }
+                else if (i == 1) {
+                    rightEyePosition = r.x;
+                    Log.e("Distance 2", String.valueOf(rightEyePosition));
 
-                Mat inputGrayImage = mGray.submat(eyearea); // 그레이 이미지
+                    distance = Math.abs(leftEyePosition - rightEyePosition);
+                    Log.e("Distance 3", String.valueOf(distance));
+                }
 
-                // OTSU
-//                Imgproc.threshold(inputGrayImage, inputGrayImage, 0, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU);
+                showNotification(distance); // 거리 판단
 
-//                Strabismus(inputGrayImage); // 사시 진단
+                Mat inputGrayImage = grayT.submat(eyearea); // 그레이 이미지
+
+                Imgproc.threshold(inputGrayImage, inputGrayImage, 0, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU); // 이진화 OTSU
+
+                Strabismus(inputGrayImage); // 사시 진단
 
                 SaveBmp(inputGrayImage, mPath); // 이미지 저장
             }
         }
 
-        return mRgba;
+        return rgbaT;
     }
 
     public void showNotification(double distance) { // 팝업 알림
