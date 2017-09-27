@@ -2,9 +2,9 @@
 <resources>
 
     <string-array name="default_preview">//tab움식임 컬러
-        <item>#b5db92</item>
-        <item>#FFDAAF</item>
-        <item>#B8E2FA</item>
+        <item>#c8d9a7</item>
+        <item>#a0b860</item>
+        <item>#83a973</item>
     </string-array>
 
 </resources>
