@@ -40,17 +40,15 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
-import com.example.doublei.NavigationTabBarBehavior;
-import com.example.doublei.R;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by GIGAMOLE on 24.03.2016.
- */
+import com.example.doublei.NavigationTabBarBehavior;
+import com.example.doublei.R;
+
 @SuppressWarnings({"unused", "DefaultFileTemplate"})
 public class NavigationTabBar extends View implements ViewPager.OnPageChangeListener {
 
