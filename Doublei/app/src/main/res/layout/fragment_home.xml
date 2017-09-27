@@ -7,7 +7,7 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <Button
+    <ImageButton
         android:id="@+id/eye"
         android:layout_width="320dp"
         android:layout_height="320dp"

@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.doublei.BackgroundService;
@@ -19,9 +21,9 @@ import com.example.doublei.Etc.Widget;
 import com.example.doublei.R;
 
 public class HomeFragment extends Fragment {
+    public ImageButton btnEye;
     public Button btnConnect;
     public boolean value;
-    public Button btnEye;
     public int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     public HomeFragment() {
@@ -35,12 +37,13 @@ public class HomeFragment extends Fragment {
         btnConnect = (Button) view.findViewById(R.id.connect);
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
+
             public void onClick(View view) {
                 buttonEvent();
             }
         });
 
-        btnEye = (Button) view.findViewById(R.id.eye);
+        btnEye = (ImageButton) view.findViewById(R.id.eye);
         btnEye.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,6 +60,10 @@ public class HomeFragment extends Fragment {
         value = Singleton.getInstance().getSwitchValue();
 
         if (value) {
+            btnEye.setImageResource(R.drawable.trans_eyebuttonoff);
+            ((TransitionDrawable) btnEye.getDrawable()).startTransition(300);
+            btnConnect.setBackgroundResource(R.drawable.connect);
+
             Toast.makeText(getActivity().getApplicationContext(), "백그라운드 작업이 종료됩니다.", Toast.LENGTH_LONG).show();
 
             value = false;
@@ -69,11 +76,12 @@ public class HomeFragment extends Fragment {
 
             Widget.updateWidget(context, widgetManager, appWidgetId);
 
-            btnEye.setBackgroundResource(R.drawable.eyeoff);
-            btnConnect.setBackgroundResource(R.drawable.connect);
-
             getActivity().stopService(new Intent(getActivity(), BackgroundService.class));
         } else {
+            btnEye.setImageResource(R.drawable.trans_eyebuttonon);
+            ((TransitionDrawable) btnEye.getDrawable()).startTransition(300);
+            btnConnect.setBackgroundResource(R.drawable.disconnect);
+
             Toast.makeText(getActivity().getApplicationContext(), "백그라운드 작업이 실행됩니다.", Toast.LENGTH_LONG).show();
             value = true;
             Singleton.getInstance().setSwitchValue(value);
@@ -84,9 +92,6 @@ public class HomeFragment extends Fragment {
             editor.commit();
 
             Widget.updateWidget(context, widgetManager, appWidgetId);
-
-            btnEye.setBackgroundResource(R.drawable.eyeon);
-            btnConnect.setBackgroundResource(R.drawable.disconnect);
 
             getActivity().startService(new Intent(getActivity(), BackgroundService.class));
         }

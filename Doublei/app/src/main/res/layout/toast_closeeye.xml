@@ -9,7 +9,7 @@
         android:id="@+id/toastImage"
         android:layout_width="200dp"
         android:layout_height="150dp"
-        android:src="@drawable/trans_eyeclose" />
+        android:src="@drawable/ic_pororoclose" />
 
     <TextView
         android:id="@+id/toastText"
