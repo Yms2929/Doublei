@@ -12,6 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.example.doublei.Setting.Alarm;
+import com.example.doublei.Setting.ChildPicture;
 import com.example.doublei.R;
 import com.example.doublei.Setting.Hospital;
 import com.example.doublei.Setting.Profile;
@@ -21,7 +24,7 @@ import com.example.doublei.Setting.Profile;
  */
 public class SecondFragment extends Fragment {
     ListView list;
-    String[] titles = {"내 프로필","눈 사진","기록","병원찾기","알람","핸드폰 거리 메세지","설정"};
+    String[] titles = {"아이 프로필", "눈 사진", "기록 보기", "병원 찾기", "알람 설정", "핸드폰 거리 메세지", "기타"};
 ///    String[] titles = {"My profile","Eye Pictures","Record","Hospital","Alarm","Distane Message","Settings"};
     int[] imgs = {R.drawable.ic_iconbaby,
             R.drawable.ic_iconeye,
@@ -53,6 +56,7 @@ public class SecondFragment extends Fragment {
                         startActivity(new Intent(getActivity(), Profile.class));
                         break;
                     case 1:
+                        startActivity(new Intent(getActivity(), ChildPicture.class));
                         break;
                     case 2:
                         break;
@@ -60,8 +64,10 @@ public class SecondFragment extends Fragment {
                         startActivity(new Intent(getActivity(), Hospital.class));
                         break;
                     case 4:
+                        startActivity(new Intent(getActivity(), Alarm.class));
                         break;
                     case 5:
+
                         break;
                     default:
                         break;

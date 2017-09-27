@@ -1,9 +1,12 @@
-package com.example.doublei;
+package com.example.doublei.Etc;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import com.example.doublei.MainActivity;
+import com.example.doublei.R;
 
 import gr.net.maroulis.library.EasySplashScreen;
 

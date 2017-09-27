@@ -1,4 +1,4 @@
-package com.example.doublei;
+package com.example.doublei.Setting;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +15,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.example.doublei.MainActivity;
+import com.example.doublei.R;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
