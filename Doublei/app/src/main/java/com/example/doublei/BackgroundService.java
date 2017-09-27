@@ -314,6 +314,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                         new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
             if (mJavaDetectorEye != null) {
                 mJavaDetectorEye.detectMultiScale(mGray, eyes);
+
             }
         }
         else if (mDetectorType == NATIVE_DETECTOR) {
@@ -366,7 +367,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
                 Rect eyearea = new Rect(r.x + r.width/6, (int)(r.y + r.height/1.8), (int)(r.width - r.width/2.5), (int)(r.height/3.5)); // 검출된 눈 영역 크기 조절
 
-                Imgproc.rectangle(mRgba, eyearea.tl(), eyearea.br(), EYES_RECT_COLOR, 2); // 조절된 눈 영역 사각형으로 그리기
+                Imgproc.rectangle(mRgbaT, eyearea.tl(), eyearea.br(), EYES_RECT_COLOR, 2); // 조절된 눈 영역 사각형으로 그리기
 
                 if (i == 0) {
                     leftEyePosition = r.x;
@@ -383,6 +384,8 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                 showNotification(distance); // 거리 판단
 
                 Mat inputGrayImage = mGray.submat(eyearea); // 그레이 이미지
+
+                Imgproc.medianBlur(inputGrayImage, inputGrayImage, 3); // 잡음 제거를 위한 미디언블러
 
                 Imgproc.threshold(inputGrayImage, inputGrayImage, 0, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU); // 이진화 OTSU
 

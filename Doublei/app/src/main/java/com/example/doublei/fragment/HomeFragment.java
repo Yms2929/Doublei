@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
             Widget.updateWidget(context, widgetManager, appWidgetId);
 
             btnEye.setBackgroundResource(R.drawable.eyeoff);
-            btnConnect.setBackgroundResource(R.drawable.disconnect);
+            btnConnect.setBackgroundResource(R.drawable.connect);
 
             getActivity().stopService(new Intent(getActivity(), BackgroundService.class));
         } else {
@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment {
             Widget.updateWidget(context, widgetManager, appWidgetId);
 
             btnEye.setBackgroundResource(R.drawable.eyeon);
-            btnConnect.setBackgroundResource(R.drawable.connect);
+            btnConnect.setBackgroundResource(R.drawable.disconnect);
 
             getActivity().startService(new Intent(getActivity(), BackgroundService.class));
         }

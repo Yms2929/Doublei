@@ -15,13 +15,13 @@ public class SplashScreen extends AppCompatActivity {
         EasySplashScreen config = new EasySplashScreen(SplashScreen.this)
                 .withFullScreen()
                 .withTargetActivity(MainActivity.class)
-                .withSplashTimeOut(5000)
+                .withSplashTimeOut(3000)
                 .withBackgroundColor(Color.parseColor("#074E72"))
                 .withLogo(R.drawable.ic_eye)
-                .withHeaderText("Welcome Guest !!!")
+                .withHeaderText("")
                 .withFooterText("Copyright 2017")
-                .withBeforeLogoText("EDMT Dev Co,Ltd")
-                .withAfterLogoText("This is Easy Splash Screen");
+                .withBeforeLogoText("")
+                .withAfterLogoText("더블아이");
 
         //Set Text Color
         config.getHeaderTextView().setTextColor(Color.WHITE);
