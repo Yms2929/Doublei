@@ -7,9 +7,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <supports-screens
         android:anyDensity="true"
@@ -63,10 +63,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
+        <receiver android:name=".Setting.BroadcastD" />
 
-        <receiver android:name=".Setting.BroadcastD"></receiver>
-
-        <activity android:name=".Setting.Hospital"></activity>
+        <activity android:name=".Setting.Hospital" />
+        <activity android:name=".Setting.PhoneDistance" />
+        <activity android:name=".Setting.PreviousRecord"></activity>
     </application>
 
 </manifest>

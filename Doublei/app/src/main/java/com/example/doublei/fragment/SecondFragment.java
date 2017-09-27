@@ -17,6 +17,8 @@ import com.example.doublei.Setting.Alarm;
 import com.example.doublei.Setting.ChildPicture;
 import com.example.doublei.R;
 import com.example.doublei.Setting.Hospital;
+import com.example.doublei.Setting.PhoneDistance;
+import com.example.doublei.Setting.PreviousRecord;
 import com.example.doublei.Setting.Profile;
 
 /**
@@ -48,7 +50,6 @@ public class SecondFragment extends Fragment {
         list.setAdapter(myAdapter);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i) {
@@ -59,6 +60,7 @@ public class SecondFragment extends Fragment {
                         startActivity(new Intent(getActivity(), ChildPicture.class));
                         break;
                     case 2:
+                        startActivity(new Intent(getActivity(), PreviousRecord.class));
                         break;
                     case 3:
                         startActivity(new Intent(getActivity(), Hospital.class));
@@ -67,7 +69,7 @@ public class SecondFragment extends Fragment {
                         startActivity(new Intent(getActivity(), Alarm.class));
                         break;
                     case 5:
-
+                        startActivity(new Intent(getActivity(), PhoneDistance.class));
                         break;
                     default:
                         break;
