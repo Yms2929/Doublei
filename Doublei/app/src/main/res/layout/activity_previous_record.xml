@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:mcv_showOtherDates="all"
-    app:mcv_selectionColor="#00F"
+    app:mcv_selectionColor="#FF4081"
     tools:context="com.example.doublei.Setting.PreviousRecord">
 
 </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
