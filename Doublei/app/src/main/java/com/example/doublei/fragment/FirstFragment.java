@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.doublei.Bar.BarView;
+import com.example.doublei.Bar.LineView;
 import com.example.doublei.MainActivity;
 import com.example.doublei.R;
 import com.jjoe64.graphview.GraphView;
@@ -76,20 +77,25 @@ public class FirstFragment extends Fragment {
         initializeData();
 
         recyclerView.setAdapter(new RecyclerAdapter(getActivity().getApplicationContext(),Graphs,R.layout.fragment_first));
-
-//        graphName = (TextView) view.findViewById(R.id.GraphName);
-//        safeDangerMessage = (TextView) view.findViewById(R.id.safeDanger);
-//        final BarView barView = (BarView) view.findViewById(R.id.bar_view);
-//        randomSet(barView);
-//        graphName.setText("사시 의심 횟수");
-//        safeDangerMessage.setText("안전");
         return view;
     }
-
-    private void randomSet(BarView barView) {
+    private void initLineView(LineView lineView) {
+        ArrayList<String> test = new ArrayList<String>();
+        for (int i = 0; i < 10; i++) {
+            test.add(String.valueOf(i + 1));
+        }
+        lineView.setBottomTextList(test);
+        lineView.setColorArray(new int[] {
+                Color.parseColor("#F44336"), Color.parseColor("#9C27B0"),
+                Color.parseColor("#2196F3"), Color.parseColor("#009688")
+        });
+        lineView.setDrawDotLine(true);
+        lineView.setShowPopup(LineView.SHOW_POPUPS_NONE);
+    }
+    private void randomSetBar(BarView barView) {
         int random = (int) (Math.random() * 20) + 6;
         ArrayList<String> test = new ArrayList<String>();
-        for (int i = 0; i < random; i++) {
+        for (int i = 0; i < 8; i++) {
             test.add("test");
             test.add("pqg");
             //            test.add(String.valueOf(i+1));
@@ -101,6 +107,33 @@ public class FirstFragment extends Fragment {
             barDataList.add((int) (Math.random() * 100));
         }
         barView.setDataList(barDataList, 100);
+    }
+
+    private void randomSetLine(LineView lineView) {
+        ArrayList<Integer> dataList = new ArrayList<>();
+        float random = (float) (Math.random() * 9 + 1);
+        for (int i = 0; i < 10; i++) {
+            dataList.add((int) (Math.random() * random));
+        }
+
+//        ArrayList<Integer> dataList2 = new ArrayList<>();
+//        random = (int) (Math.random() * 9 + 1);
+//        for (int i = 0; i < randomint; i++) {
+//            dataList2.add((int) (Math.random() * random));
+//        }
+//
+//        ArrayList<Integer> dataList3 = new ArrayList<>();
+//        random = (int) (Math.random() * 9 + 1);
+//        for (int i = 0; i < randomint; i++) {
+//            dataList3.add((int) (Math.random() * random));
+//        }
+
+        ArrayList<ArrayList<Integer>> dataLists = new ArrayList<>();
+        dataLists.add(dataList);
+//        dataLists.add(dataList2);
+//        dataLists.add(dataList3);
+
+        lineView.setDataList(dataLists);
     }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
@@ -116,6 +149,7 @@ public class FirstFragment extends Fragment {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_line,null);
         View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_usetimegraph,null);
         return new ViewHolder(v);
     }
@@ -124,7 +158,9 @@ public class FirstFragment extends Fragment {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final GraphInformation item=items.get(position);
-        randomSet(holder.graph);
+//        initLineView(holder.lineView);
+//        randomSetLine(holder.lineView);
+        randomSetBar(holder.graph);
         holder.graphName.setText(item.getGraphName());
         holder.safeDangerMessage.setText(item.getSafeDangerMessage());
         holder.cardview.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +178,7 @@ public class FirstFragment extends Fragment {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView graphName, safeDangerMessage;
+//        LineView lineView;
         BarView graph;
         CardView cardview;
 
@@ -150,6 +187,7 @@ public class FirstFragment extends Fragment {
             graphName=(TextView)itemView.findViewById(R.id.GraphName);
             safeDangerMessage=(TextView)itemView.findViewById(R.id.safeDanger);
             cardview=(CardView)itemView.findViewById(R.id.Cardview);
+//            lineView=(LineView) itemView.findViewById(R.id.line_view);
             graph=(BarView) itemView.findViewById(R.id.bar_view);
         }
     }
