@@ -17,7 +17,7 @@ public class LineFragment extends Fragment {
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_line, container, false);
+        View rootView = inflater.inflate(R.layout.cardview_uselinegraph, container, false);
         final LineView lineView = (LineView) rootView.findViewById(R.id.line_view);
 
         initLineView(lineView);
