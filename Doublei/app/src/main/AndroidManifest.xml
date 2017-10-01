@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <supports-screens
         android:anyDensity="true"
@@ -66,8 +68,23 @@
         <receiver android:name=".Setting.BroadcastD" />
 
         <activity android:name=".Setting.Hospital" />
-        <activity android:name=".Setting.PhoneDistance" />
-        <activity android:name=".Setting.PreviousRecord"></activity>
+        <activity android:name=".Setting.PreviousRecord"/>
+
+        <activity android:name=".MainAlarmActivity" android:theme="@style/AppThemeA"/>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/settings">
+        </activity>
+
+        <activity android:name=".alarm.AlarmActivity" android:theme="@style/AppThemeA"/>
+        <receiver android:name=".alarm.AlarmReceiver"/>
+        <receiver android:name=".alarm.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".alarm.AlarmService"/>
+
     </application>
 
 </manifest>

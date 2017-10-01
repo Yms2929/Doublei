@@ -118,7 +118,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
                     try {
                         // load cascade file from application resources
-                        InputStream is = getResources().openRawResource(R.raw.lbpcascade_frontalface);
+                        InputStream is = getResources().openRawResource(R.raw.lbpcascade_frontalface); // cascade 불러오기
                         File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
                         mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
                         FileOutputStream os = new FileOutputStream(mCascadeFile);
@@ -298,7 +298,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         Imgproc.resize(mGrayT, mGrayT, mGray.size());
 
         if (mAbsoluteFaceSize == 0) {
-            int height = mGray.rows();
+            int height = mGrayT.rows();
             if (Math.round(height * mRelativeFaceSize) > 0) {
                 mAbsoluteFaceSize = Math.round(height * mRelativeFaceSize); // 높이 * 0.2 를 반올림
             }
@@ -310,11 +310,10 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
         if (mDetectorType == JAVA_DETECTOR) { // 자바 디텍터 일때
             if (mJavaDetector != null) // 객체가 null 이 아닐때
-                mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                mJavaDetector.detectMultiScale(mGrayT, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
                         new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
             if (mJavaDetectorEye != null) {
-                mJavaDetectorEye.detectMultiScale(mGray, eyes);
-
+                mJavaDetectorEye.detectMultiScale(mGrayT, eyes);
             }
         }
         else if (mDetectorType == NATIVE_DETECTOR) {
@@ -331,9 +330,9 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 //        for (int i = 0; i < facesArray.length; i++) // 검출된 얼굴이나 눈을 사각형으로 그리기
 //        {
 //            Rect r = facesArray[i];
-//            Imgproc.rectangle(rgbaT, r.tl(), r.br(), FACE_RECT_COLOR, 3); // 얼굴 그리기
-//
-//            Mat faceArea = grayT.submat(r);
+//            Imgproc.rectangle(mRgbaT, r.tl(), r.br(), FACE_RECT_COLOR, 3); // 얼굴 그리기
+
+//            Mat faceArea = mGrayT.submat(r);
 //
 //            int ret;
 //            ret = CompareFeature(mPath + "iu.jpg", faceArea);
@@ -349,10 +348,10 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 //            }
 //            else {
 //                trueFace = false;
-////                Message msg = new Message();
-////                String result = "different person";
-////                msg.obj = result;
-////                mHandler.sendMessage(msg);
+//                Message msg = new Message();
+//                String result = "different person";
+//                msg.obj = result;
+//                mHandler.sendMessage(msg);
 //
 //                Log.e("face Test", "Two images are different");
 //            }
@@ -365,7 +364,9 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
 //                Rect eyearea = new Rect(r.x, r.y, r.width, r.height);
 
-                Rect eyearea = new Rect(r.x + r.width/6, (int)(r.y + r.height/1.8), (int)(r.width - r.width/2.5), (int)(r.height/3.5)); // 검출된 눈 영역 크기 조절
+//                Rect eyearea = new Rect(r.x + r.width/6, (int)(r.y + r.height/1.8), (int)(r.width - r.width/2.5), (int)(r.height/3.5)); // 검출된 눈 영역 크기 조절 mRgba
+
+                Rect eyearea = new Rect(r.x, (int)(r.y + r.height/1.8), (int)(r.width), (int)(r.height/4.5)); // 검출된 눈 영역 크기 조절 mRgbaT
 
                 Imgproc.rectangle(mRgbaT, eyearea.tl(), eyearea.br(), EYES_RECT_COLOR, 2); // 조절된 눈 영역 사각형으로 그리기
 
@@ -383,16 +384,17 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
                 showNotification(distance); // 거리 판단
 
-                Mat inputGrayImage = mGray.submat(eyearea); // 그레이 이미지
+                Mat inputGrayImage = mGrayT.submat(eyearea); // 그레이 스케일링
 
                 Imgproc.medianBlur(inputGrayImage, inputGrayImage, 3); // 잡음 제거를 위한 미디언블러
 
                 Imgproc.threshold(inputGrayImage, inputGrayImage, 0, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU); // 이진화 OTSU
 
-                if (Strabismus(inputGrayImage)) {
-                    SaveBmp(inputGrayImage, mPath); // 이미지 저장
-                }
+//                if (Strabismus(inputGrayImage)) {
+//                    SaveBmp(inputGrayImage, mPath); // 이미지 저장
+//                }
 
+                SaveBmp(inputGrayImage, mPath); // 이미지 저장
 //                Strabismus(inputGrayImage); // 사시 진단
             }
         }
@@ -477,19 +479,19 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         int blackCount = 0;
         int whiteCount = 0;
 
-        for (int j = 0; j < inputGrayImage.height(); j++) {
-            for (int k = 0; k < inputGrayImage.width(); k++) { // 이진화된 눈영역 검사
+        for (int i = 0; i < inputGrayImage.height(); i++) {
+            for (int j = 0; j < inputGrayImage.width(); j++) { // 이진화된 눈영역 검사
 
-                double pixel = inputGrayImage.get(j,k)[0];
+                double pixel = inputGrayImage.get(i,j)[0];
 
                 if (pixel == 0) {
-                    if (0 <= k && inputGrayImage.width()/3 > k) {
+                    if (0 <= j && inputGrayImage.width()/3 > j) { // 픽셀 수 카운트
                         pixelArea[0]++;
                     }
-                    else if (inputGrayImage.width()/3 <= k && inputGrayImage.width()*2/3 > k) {
+                    else if (inputGrayImage.width()/3 <= j && inputGrayImage.width()*2/3 > j) {
                         pixelArea[1]++;
                     }
-                    else if (inputGrayImage.width()*2/3 <= k && inputGrayImage.width() >= k) {
+                    else if (inputGrayImage.width()*2/3 <= j && inputGrayImage.width() >= j) {
                         pixelArea[2]++;
                     }
                     blackCount++;
@@ -501,8 +503,8 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
             }
         }
 
-        pixelArea[0] = pixelArea[0] + (blackCount/10); // 왼쪽 오른쪽 가중치 주기
-        pixelArea[2] = pixelArea[2] + (blackCount/10);
+        pixelArea[0] = pixelArea[0] + (pixelArea[0]/3); // 왼쪽 오른쪽 가중치 주기
+        pixelArea[2] = pixelArea[2] + (pixelArea[2]/3);
 
         if (pixelArea[0] > pixelArea[1] && pixelArea[0] > pixelArea[2]) {
             maxArea[0] = true;
@@ -537,7 +539,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
             count++;
         }
-        if (count == 2) {
+        else if (count == 1) { // 두눈 다 체크 했을때
             if ((leftArea[0] && leftArea[1]) || (middleArea[0] && middleArea[1]) || (rightArea[0] && rightArea[1])) {
                 strabismus = false;
                 Log.e("Strabismus Count", String.valueOf(strabismus));
@@ -548,14 +550,14 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
             }
 
             // 초기화
-            for (int l = 0; l < 2; l++) {
-                leftCount[l] = 0;
-                middleCount[l] = 0;
-                rightCount[l] = 0;
+            for (int k = 0; k < 2; k++) {
+                leftCount[k] = 0;
+                middleCount[k] = 0;
+                rightCount[k] = 0;
 
-                leftArea[l] = false;
-                middleArea[l] = false;
-                rightArea[l] = false;
+                leftArea[k] = false;
+                middleArea[k] = false;
+                rightArea[k] = false;
             }
 
             count = 0;
@@ -564,7 +566,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         return strabismus;
     }
 
-    private void SaveBmp(Mat inputGrayImage, String path) // 비트맵 저장 메서드
+    private void SaveBmp(Mat inputGrayImage, String path) // 이미지 저장
     {
         Bitmap bitmap = Bitmap.createBitmap(inputGrayImage.width(), inputGrayImage.height(), Bitmap.Config.ARGB_8888); // 비트맵 만들기
         Utils.matToBitmap(inputGrayImage, bitmap); // mat을 bitmap 형식으로 변환

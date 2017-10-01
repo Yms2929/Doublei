@@ -12,12 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.doublei.R;
 import com.example.doublei.Setting.Alarm;
 import com.example.doublei.Setting.ChildPicture;
-import com.example.doublei.R;
 import com.example.doublei.Setting.Hospital;
-import com.example.doublei.Setting.PhoneDistance;
 import com.example.doublei.Setting.PreviousRecord;
 import com.example.doublei.Setting.Profile;
 
@@ -69,7 +69,7 @@ public class SecondFragment extends Fragment {
                         startActivity(new Intent(getActivity(), Alarm.class));
                         break;
                     case 5:
-                        startActivity(new Intent(getActivity(), PhoneDistance.class));
+                        PhoneDistance();
                         break;
                     default:
                         break;
@@ -102,6 +102,16 @@ public class SecondFragment extends Fragment {
             myTitle.setText(titles[posistion]);
 
             return concertView;
+        }
+    }
+
+    public void PhoneDistance() {
+        boolean message = false;
+        if (message) {
+            Toast.makeText(getActivity(), "경고 메세지가 활성화 되었습니다", Toast.LENGTH_SHORT).show();
+        }
+        else if (!message) {
+            Toast.makeText(getActivity(), "경고 메세지가 비활성화 되었습니다", Toast.LENGTH_SHORT).show();
         }
     }
 }
