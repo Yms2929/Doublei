@@ -12,5 +12,7 @@
     <color name="color_DarkGray">#818e99</color>
     <color name="color_Gray">#a0aab3</color>
     <color name="color_LightGray">#b8bfc6</color>
-
+    <color name="lightBlue500">#03a9f4</color>
+    <color name="lightBlue400">#29b6f6</color>
+    <color name="lightBlue300">#4fc3f7</color>
 </resources>
