@@ -70,12 +70,6 @@
         <activity android:name=".Setting.Hospital" />
         <activity android:name=".Setting.PreviousRecord"/>
 
-        <activity android:name=".MainAlarmActivity" android:theme="@style/AppThemeA"/>
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/settings">
-        </activity>
-
         <activity android:name=".alarm.AlarmActivity" android:theme="@style/AppThemeA"/>
         <receiver android:name=".alarm.AlarmReceiver"/>
         <receiver android:name=".alarm.BootReceiver">
