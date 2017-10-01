@@ -36,20 +36,6 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"/>
 
-            <!--HorizontalScrollView
-                android:id="@+id/horizontalScrollView"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="10dp">
-
-                <view
-                    class="com.example.doublei.Bar.LineView"
-                    android:id="@+id/line_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="300dp" />
-            </HorizontalScrollView-->
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

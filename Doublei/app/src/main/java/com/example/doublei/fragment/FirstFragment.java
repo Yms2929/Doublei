@@ -2,10 +2,7 @@ package com.example.doublei.Fragment;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.doublei.Bar.BarView;
-import com.example.doublei.Bar.LineView;
 import com.example.doublei.R;
+import com.hrules.charter.CharterBar;
 import com.hrules.charter.CharterLine;
 import com.hrules.charter.CharterXLabels;
 import com.hrules.charter.CharterYLabels;
@@ -71,7 +67,6 @@ public class FirstFragment extends Fragment {
                 res.getColor(R.color.lightBlue500), res.getColor(R.color.lightBlue400),
                 res.getColor(R.color.lightBlue300)
         };
-
         recyclerView.setAdapter(new RecyclerAdapter(getActivity().getApplicationContext(), Graphs, R.layout.fragment_first));
         return view;
     }
@@ -81,27 +76,6 @@ public class FirstFragment extends Fragment {
         Graphs.add(new GraphInformation("사시 의심 횟수", "안전"));
         Graphs.add(new GraphInformation("스마티폰 사용 시간", "안전"));
     }
-
-    private void randomSetBar(BarView barView) {
-        ArrayList<String> test = new ArrayList<String>();
-        for (int i = 0; i < 8; i++) {
-            test.add(String.valueOf(i + 1));
-        }
-        barView.setBottomTextList(test);
-
-        ArrayList<Integer> barDataList = new ArrayList<Integer>();
-        for (int i = 0; i < 8; i++) {
-            barDataList.add((int) (Math.random() * 100));
-        }
-        barView.setDataList(barDataList, 100);
-    }
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
         Context context;
@@ -132,7 +106,16 @@ public class FirstFragment extends Fragment {
             final GraphInformation item = items.get(position);
             if (holder.getItemViewType() == TYPE_Bar) {
                 ViewHolderBar mholder = (ViewHolderBar) holder;
-                randomSetBar(mholder.barView);
+                mholder.charterBarLabelX.setStickyEdges(false);
+                mholder.charterBarLabelX.setVisibilityPattern(new boolean[] { true, false });
+                mholder.charterBarLabelX.setValues(values);
+
+                mholder.charterBarYLabel.setVisibilityPattern(new boolean[] { true, false });
+                mholder.charterBarYLabel.setValues(values, true);
+
+                mholder.charterBarWithLabel.setValues(values);
+                mholder.charterBarWithLabel.setColors(barColors);
+
                 mholder.graphName.setText(item.getGraphName());
                 mholder.safeDangerMessage.setText(item.getSafeDangerMessage());
                 mholder.cardview.setOnClickListener(new View.OnClickListener() {
@@ -143,8 +126,6 @@ public class FirstFragment extends Fragment {
                 });
             } else if (holder.getItemViewType() == TYPE_Line) {
                 ViewHolderLine mholder = (ViewHolderLine) holder;
-//                randomSetLine(mholder.lineView);
-
                 mholder.charterLineLabelX.setStickyEdges(true);
                 mholder.charterLineLabelX.setValues(values);
                 mholder.charterLineYLabel.setValues(values, true);
@@ -179,15 +160,19 @@ public class FirstFragment extends Fragment {
 
         public class ViewHolderBar extends ViewHolder {
             TextView graphName, safeDangerMessage;
-            BarView barView;
             CardView cardview;
+            CharterBar charterBarWithLabel;
+            CharterXLabels charterBarLabelX;
+            CharterYLabels charterBarYLabel;
 
             public ViewHolderBar(View itemView) {
                 super(itemView);
                 graphName = (TextView) itemView.findViewById(R.id.GraphName);
                 safeDangerMessage = (TextView) itemView.findViewById(R.id.safeDanger);
                 cardview = (CardView) itemView.findViewById(R.id.Cardview);
-                barView = (BarView) itemView.findViewById(R.id.bar_view);
+                charterBarWithLabel = (CharterBar)itemView.findViewById(R.id.charter_bar_with_XLabel);
+                charterBarLabelX = (CharterXLabels)itemView.findViewById(R.id.charter_bar_XLabel);
+                charterBarYLabel = (CharterYLabels)itemView.findViewById(R.id.charter_bar_YLabel);
             }
         }
 
