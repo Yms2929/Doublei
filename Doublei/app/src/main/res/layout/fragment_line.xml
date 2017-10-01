@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.doublei.Fragment.FirstFragment">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/Cardview"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_margin="10dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground">
+
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff">
+
+            <TextView
+                android:id="@+id/GraphName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="graphName" />
+
+            <TextView
+                android:id="@+id/safeDanger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="safeDanger"
+                android:textColor="@color/color_LightGreen"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"/>
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="10dp">
+
+                <view
+                    class="com.example.doublei.Bar.LineView"
+                    android:id="@+id/line_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="300dp" />
+            </HorizontalScrollView>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>
