@@ -1,46 +1,42 @@
 package com.example.doublei.Fragment;
 
-import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.doublei.Bar.BarView;
 import com.example.doublei.Bar.LineView;
-import com.example.doublei.MainActivity;
 import com.example.doublei.R;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.hrules.charter.CharterLine;
+import com.hrules.charter.CharterXLabels;
+import com.hrules.charter.CharterYLabels;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.doublei.R.id.age;
+import java.util.Random;
 
 public class FirstFragment extends Fragment {
     View view;
     private static final int TYPE_Line = 1;
     private static final int TYPE_Bar = 2;
+
+    private static final int DEFAULT_ITEMS_COUNT = 15;
+    private static final int DEFAULT_RANDOM_VALUE_MIN = 10;
+    private static final int DEFAULT_RANDOM_VALUE_MAX = 100;
+
+    private float[] values;
+    int[] barColors;
 
     class GraphInformation {
         String graphName;
@@ -62,16 +58,19 @@ public class FirstFragment extends Fragment {
 
     private List<GraphInformation> Graphs;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_first, container, false);
-
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         initializeData();
+
+        values =fillRandomValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN);
+        Resources res = getResources();
+        barColors = new int[] {
+                res.getColor(R.color.lightBlue500), res.getColor(R.color.lightBlue400),
+                res.getColor(R.color.lightBlue300)
+        };
 
         recyclerView.setAdapter(new RecyclerAdapter(getActivity().getApplicationContext(), Graphs, R.layout.fragment_first));
         return view;
@@ -81,20 +80,6 @@ public class FirstFragment extends Fragment {
         Graphs = new ArrayList<>();
         Graphs.add(new GraphInformation("사시 의심 횟수", "안전"));
         Graphs.add(new GraphInformation("스마티폰 사용 시간", "안전"));
-    }
-
-    private void initLineView(LineView lineView) {//Line그래프 초기화
-        ArrayList<String> test = new ArrayList<String>();
-        for (int i = 0; i < 10; i++) {
-            test.add(String.valueOf(i + 1));
-        }
-        lineView.setBottomTextList(test);
-        lineView.setColorArray(new int[]{
-                Color.parseColor("#F44336"), Color.parseColor("#9C27B0"),
-                Color.parseColor("#2196F3"), Color.parseColor("#009688")
-        });
-        lineView.setDrawDotLine(true);
-        lineView.setShowPopup(LineView.SHOW_POPUPS_NONE);
     }
 
     private void randomSetBar(BarView barView) {
@@ -111,21 +96,9 @@ public class FirstFragment extends Fragment {
         barView.setDataList(barDataList, 100);
     }
 
-    private void randomSetLine(LineView lineView) {
-        ArrayList<Integer> dataList = new ArrayList<>();
-        float random = (float) (Math.random() * 9 + 1);
-        for (int i = 0; i < 10; i++) {
-            dataList.add((int) (Math.random() * random));
-        }
-
-        ArrayList<ArrayList<Integer>> dataLists = new ArrayList<>();
-        dataLists.add(dataList);
-
-        lineView.setDataList(dataLists);
-    }
-
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -154,7 +127,6 @@ public class FirstFragment extends Fragment {
             return null;
         }
 
-        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             final GraphInformation item = items.get(position);
@@ -171,8 +143,13 @@ public class FirstFragment extends Fragment {
                 });
             } else if (holder.getItemViewType() == TYPE_Line) {
                 ViewHolderLine mholder = (ViewHolderLine) holder;
-                initLineView(mholder.lineView);
-                randomSetLine(mholder.lineView);
+//                randomSetLine(mholder.lineView);
+
+                mholder.charterLineLabelX.setStickyEdges(true);
+                mholder.charterLineLabelX.setValues(values);
+                mholder.charterLineYLabel.setValues(values, true);
+                mholder.charterLineWithLabel.setValues(values);
+
                 mholder.graphName.setText(item.getGraphName());
                 mholder.safeDangerMessage.setText(item.getSafeDangerMessage());
                 mholder.cardview.setOnClickListener(new View.OnClickListener() {
@@ -187,6 +164,17 @@ public class FirstFragment extends Fragment {
         @Override
         public int getItemCount() {
             return this.items.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position == 0 ? TYPE_Line : TYPE_Bar;
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            public ViewHolder(View v) {
+                super(v);
+            }
         }
 
         public class ViewHolderBar extends ViewHolder {
@@ -205,27 +193,29 @@ public class FirstFragment extends Fragment {
 
         public class ViewHolderLine extends ViewHolder {
             TextView graphName, safeDangerMessage;
-            LineView lineView;
             CardView cardview;
+            CharterLine charterLineWithLabel;
+            CharterXLabels charterLineLabelX;
+            CharterYLabels charterLineYLabel;
 
             public ViewHolderLine(View itemView) {
                 super(itemView);
                 graphName = (TextView) itemView.findViewById(R.id.GraphName);
                 safeDangerMessage = (TextView) itemView.findViewById(R.id.safeDanger);
                 cardview = (CardView) itemView.findViewById(R.id.Cardview);
-                lineView = (LineView) itemView.findViewById(R.id.line_view);
+                charterLineWithLabel = (CharterLine)itemView.findViewById(R.id.charter_line_with_XLabel);
+                charterLineLabelX = (CharterXLabels)itemView.findViewById(R.id.charter_line_XLabel);
+                charterLineYLabel = (CharterYLabels)itemView.findViewById(R.id.charter_line_YLabel);
             }
         }
+    }
+    private float[] fillRandomValues(int length, int max, int min) {
+        Random random = new Random();
 
-        @Override
-        public int getItemViewType(int position) {
-            return position == 0 ? TYPE_Line : TYPE_Bar;
+        float[] newRandomValues = new float[length];
+        for (int i = 0; i < newRandomValues.length; i++) {
+            newRandomValues[i] = random.nextInt(max - min + 1) - min;
         }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public ViewHolder(View v) {
-                super(v);
-            }
-        }
+        return newRandomValues;
     }
 }

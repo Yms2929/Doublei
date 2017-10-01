@@ -49,5 +49,6 @@ dependencies {
     compile 'gr.pantrif:easy-android-splash-screen:0.0.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.hrules:charter:1.5.1'
     testCompile 'junit:junit:4.12'
 }
