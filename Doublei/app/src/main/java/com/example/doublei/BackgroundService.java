@@ -357,10 +357,10 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 //                Rect eyearea = new Rect(r.x + r.width/6, (int)(r.y + r.height/1.8), (int)(r.width - r.width/2.5), (int)(r.height/3.5)); // 검출된 눈 영역 크기 조절 mRgba
 
                 if (i == 0) { // 오른눈
-                    eyearea = new Rect(r.x, (int) (r.y + r.height / 1.8), (int) (r.width), (int) (r.height / 4.5)); // 검출된 눈 영역 크기 조절 mRgbaT
+                    eyearea = new Rect(r.x, (int) (r.y + r.height / 1.8), (r.width - r.width/8), (int) (r.height / 4.5)); // 검출된 눈 영역 크기 조절 mRgbaT
                     rightEyePosition = r.x;
                 } else if (i == 1) { // 왼눈
-                    eyearea = new Rect(r.x, (int) (r.y + r.height / 1.8), (int) (r.width), (int) (r.height / 4.5)); // 검출된 눈 영역 크기 조절 mRgbaT
+                    eyearea = new Rect(r.x + r.width/8, (int) (r.y + r.height / 1.8), (r.width - r.width/8), (int) (r.height / 4.5)); // 검출된 눈 영역 크기 조절 mRgbaT
                     leftEyePosition = r.x;
 
                     distance = Math.abs(rightEyePosition - leftEyePosition);
