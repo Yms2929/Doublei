@@ -18,7 +18,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -46,8 +45,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
 
 public class BackgroundService extends Service implements CameraBridgeViewBase.CvCameraViewListener2 {
     private static final String TAG = "OpenCV";
@@ -72,12 +69,8 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     private int mAbsoluteFaceSize = 0;
     private String mPath = "";
     private JavaCameraView mOpenCvCameraView;
-    TextView resultName;
-    Handler mHandler;
-    Set<String> uniqueNames = new HashSet<String>(); // 집합 Collection 순서 의미 없고 데이터 중복 할수 없음
     int count = 0;
     int imageCount = 0;
-    int[] eyeCount = new int[2];
     int[] leftCount = new int[2];
     int[] middleCount = new int[2];
     int[] rightCount = new int[2];
@@ -94,6 +87,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     private double leftEyePosition = 0.0;
     private double rightEyePosition = 0.0;
     private double distance = 0.0;
+    private int strabismusCount = 0;
 
     static {
         OpenCVLoader.initDebug();
@@ -221,23 +215,6 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         mPath = Environment.getExternalStorageDirectory() + "/Doublei/";
         Log.e("Path", mPath);
 
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) { // 메세지 받아서 동작
-                switch (msg.what) {
-                    case 1:
-                        String tempName = msg.obj.toString();
-                        resultName.setText(tempName);
-                        break;
-                    case 2:
-
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-
         boolean success = (new File(mPath)).mkdirs();
         if (!success)
         {
@@ -284,6 +261,22 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         super.onDestroy();
     }
 
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+
+                    break;
+                case 1:
+
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) { // 카메라 프레임
         mRgba = inputFrame.rgba();
@@ -315,19 +308,17 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
             if (mJavaDetectorEye != null) {
                 mJavaDetectorEye.detectMultiScale(mGrayT, eyes);
             }
-        }
-        else if (mDetectorType == NATIVE_DETECTOR) {
+        } else if (mDetectorType == NATIVE_DETECTOR) {
             /*if (mNativeDetector != null)
                 mNativeDetector.detect(mGray, faces);*/
-        }
-        else {
+        } else {
             Log.e(TAG, "Detection method is not selected!");
         }
 
         Rect[] facesArray = faces.toArray();
         Rect[] eyesArray = eyes.toArray();
 
-//        for (int i = 0; i < facesArray.length; i++) // 검출된 얼굴이나 눈을 사각형으로 그리기
+        //        for (int i = 0; i < facesArray.length; i++) // 검출된 얼굴이나 눈을 사각형으로 그리기
 //        {
 //            Rect r = facesArray[i];
 //            Imgproc.rectangle(mRgbaT, r.tl(), r.br(), FACE_RECT_COLOR, 3); // 얼굴 그리기
@@ -361,41 +352,37 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         {
             if (eyesArray.length == 2) {
                 Rect r = eyesArray[i];
-
-//                Rect eyearea = new Rect(r.x, r.y, r.width, r.height);
-
+                Rect eyearea = null;
+                Rect eyeareaOriginal = new Rect(r.x, r.y, r.width, r.height); // 기본으로 검출된 눈 영역 크기
 //                Rect eyearea = new Rect(r.x + r.width/6, (int)(r.y + r.height/1.8), (int)(r.width - r.width/2.5), (int)(r.height/3.5)); // 검출된 눈 영역 크기 조절 mRgba
 
-                Rect eyearea = new Rect(r.x, (int)(r.y + r.height/1.8), (int)(r.width), (int)(r.height/4.5)); // 검출된 눈 영역 크기 조절 mRgbaT
-
-                Imgproc.rectangle(mRgbaT, eyearea.tl(), eyearea.br(), EYES_RECT_COLOR, 2); // 조절된 눈 영역 사각형으로 그리기
-
-                if (i == 0) {
-                    leftEyePosition = r.x;
-                    Log.e("Distance 1", String.valueOf(leftEyePosition));
-                }
-                else if (i == 1) {
+                if (i == 0) { // 오른눈
+                    eyearea = new Rect(r.x, (int) (r.y + r.height / 1.8), (int) (r.width), (int) (r.height / 4.5)); // 검출된 눈 영역 크기 조절 mRgbaT
                     rightEyePosition = r.x;
-                    Log.e("Distance 2", String.valueOf(rightEyePosition));
+                } else if (i == 1) { // 왼눈
+                    eyearea = new Rect(r.x, (int) (r.y + r.height / 1.8), (int) (r.width), (int) (r.height / 4.5)); // 검출된 눈 영역 크기 조절 mRgbaT
+                    leftEyePosition = r.x;
 
-                    distance = Math.abs(leftEyePosition - rightEyePosition);
+                    distance = Math.abs(rightEyePosition - leftEyePosition);
                     Log.e("Distance 3", String.valueOf(distance));
                 }
+
+                Imgproc.rectangle(mRgbaT, eyearea.tl(), eyearea.br(), EYES_RECT_COLOR, 2); // 조절된 눈 영역 사각형으로 그리기
 
                 showNotification(distance); // 거리 판단
 
                 Mat inputGrayImage = mGrayT.submat(eyearea); // 그레이 스케일링
+                Mat eyeRgbImage = mRgbaT.submat(eyeareaOriginal);
 
                 Imgproc.medianBlur(inputGrayImage, inputGrayImage, 3); // 잡음 제거를 위한 미디언블러
 
                 Imgproc.threshold(inputGrayImage, inputGrayImage, 0, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU); // 이진화 OTSU
 
-//                if (Strabismus(inputGrayImage)) {
-//                    SaveBmp(inputGrayImage, mPath); // 이미지 저장
+//                if (Strabismus(inputGrayImage)) { // 사시가 발견되면
+//
 //                }
-
-                SaveBmp(inputGrayImage, mPath); // 이미지 저장
-//                Strabismus(inputGrayImage); // 사시 진단
+                SaveBmp(inputGrayImage, mPath); // 내부저장소에 눈 이미지 저장
+                SaveBmp(eyeRgbImage, mPath);
             }
         }
 
@@ -482,41 +469,35 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         for (int i = 0; i < inputGrayImage.height(); i++) {
             for (int j = 0; j < inputGrayImage.width(); j++) { // 이진화된 눈영역 검사
 
-                double pixel = inputGrayImage.get(i,j)[0];
+                double pixel = inputGrayImage.get(i, j)[0];
 
                 if (pixel == 0) {
-                    if (0 <= j && inputGrayImage.width()/3 > j) { // 픽셀 수 카운트
+                    if (0 <= j && inputGrayImage.width() / 3 > j) { // 픽셀 수 카운트
                         pixelArea[0]++;
-                    }
-                    else if (inputGrayImage.width()/3 <= j && inputGrayImage.width()*2/3 > j) {
+                    } else if (inputGrayImage.width() / 3 <= j && inputGrayImage.width() * 2 / 3 > j) {
                         pixelArea[1]++;
-                    }
-                    else if (inputGrayImage.width()*2/3 <= j && inputGrayImage.width() >= j) {
+                    } else if (inputGrayImage.width() * 2 / 3 <= j && inputGrayImage.width() >= j) {
                         pixelArea[2]++;
                     }
                     blackCount++;
-                }
-
-                else if (pixel == 255) {
+                } else if (pixel == 255) {
                     whiteCount++;
                 }
             }
         }
 
-        pixelArea[0] = pixelArea[0] + (pixelArea[0]/3); // 왼쪽 오른쪽 가중치 주기
-        pixelArea[2] = pixelArea[2] + (pixelArea[2]/3);
+        pixelArea[0] = pixelArea[0] + (pixelArea[0] / 5); // 왼쪽 오른쪽 가중치 주기
+        pixelArea[2] = pixelArea[2] + (pixelArea[2] / 5);
 
         if (pixelArea[0] > pixelArea[1] && pixelArea[0] > pixelArea[2]) {
             maxArea[0] = true;
             maxArea[1] = false;
             maxArea[2] = false;
-        }
-        else if (pixelArea[1] > pixelArea[0] && pixelArea[1] > pixelArea[2]) {
+        } else if (pixelArea[1] > pixelArea[0] && pixelArea[1] > pixelArea[2]) {
             maxArea[0] = false;
             maxArea[1] = true;
             maxArea[2] = false;
-        }
-        else if (pixelArea[2] > pixelArea[0] && pixelArea[2] > pixelArea[1]) {
+        } else if (pixelArea[2] > pixelArea[0] && pixelArea[2] > pixelArea[1]) {
             maxArea[0] = false;
             maxArea[1] = false;
             maxArea[2] = true;
@@ -537,16 +518,18 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
             Log.e("Black Count", String.valueOf(blackCount));
             Log.e("White Count", String.valueOf(whiteCount));
 
-            count++;
-        }
-        else if (count == 1) { // 두눈 다 체크 했을때
-            if ((leftArea[0] && leftArea[1]) || (middleArea[0] && middleArea[1]) || (rightArea[0] && rightArea[1])) {
-                strabismus = false;
-                Log.e("Strabismus Count", String.valueOf(strabismus));
-            }
-            else {
-                strabismus = true;
-                Log.e("Strabismus Count", String.valueOf(strabismus));
+            if (count == 1) { // 두눈 다 체크 했을때
+                if ((leftArea[0] && leftArea[1]) || (middleArea[0] && middleArea[1]) || (rightArea[0] && rightArea[1])) {
+                    strabismus = false;
+                } else {
+                    strabismus = true;
+                    strabismusCount++;
+                }
+                Log.e("Strabismus", String.valueOf(strabismus));
+                Log.e("Strabisums Count", String.valueOf(strabismusCount));
+                count = 0;
+
+                return strabismus;
             }
 
             // 초기화
@@ -560,7 +543,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                 rightArea[k] = false;
             }
 
-            count = 0;
+            count++;
         }
 
         return strabismus;
