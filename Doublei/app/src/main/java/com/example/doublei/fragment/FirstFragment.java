@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +26,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Random;
 
 public class FirstFragment extends Fragment {
     View view;
@@ -36,11 +36,14 @@ public class FirstFragment extends Fragment {
     private static final int DEFAULT_RANDOM_VALUE_MIN = 10;
     private static final int DEFAULT_RANDOM_VALUE_MAX = 100;
 
-    private float[] lineValues;
-    private float[] barXValues;
+    private float[] lineYValues;
+    private float[] barandlineXValues;
     private float[] barYValues;
     int[] barColors;
     String strDate = "";
+    private String strDateForline = "";
+
+    int strabismusCount;
 
     class GraphInformation {
         String graphName;
@@ -69,8 +72,8 @@ public class FirstFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         initializeData();
 
-        lineValues = fillRandomValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // line Value
-        barXValues = barFillXValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // bar Value
+        barandlineXValues = barandlineFillXValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // line Value
+        lineYValues = lineFillYValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // line Value
         barYValues = barFillYValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // bar Value
 
         Resources res = getResources();
@@ -118,8 +121,7 @@ public class FirstFragment extends Fragment {
             if (holder.getItemViewType() == TYPE_Bar) {
                 ViewHolderBar mholder = (ViewHolderBar) holder;
                 mholder.charterBarLabelX.setStickyEdges(false);
-                mholder.charterBarLabelX.setVisibilityPattern(new boolean[] { true, false });
-                mholder.charterBarLabelX.setValues(barXValues);
+                mholder.charterBarLabelX.setValues(barandlineXValues);
 
                 mholder.charterBarYLabel.setVisibilityPattern(new boolean[] { true, false });
                 mholder.charterBarYLabel.setValues(barYValues, true);
@@ -138,9 +140,12 @@ public class FirstFragment extends Fragment {
             } else if (holder.getItemViewType() == TYPE_Line) {
                 ViewHolderLine mholder = (ViewHolderLine) holder;
                 mholder.charterLineLabelX.setStickyEdges(true);
-                mholder.charterLineLabelX.setValues(lineValues);
-                mholder.charterLineYLabel.setValues(lineValues, true);
-                mholder.charterLineWithLabel.setValues(lineValues);
+                mholder.charterLineLabelX.setValues(barandlineXValues);
+
+                //mholder.charterLineYLabel.setVisibilityPattern(new boolean[] {true, false});
+                mholder.charterLineYLabel.setValues(lineYValues,true); // false로 규정
+
+                mholder.charterLineWithLabel.setValues(lineYValues);
 
                 mholder.graphName.setText(item.getGraphName());
                 mholder.safeDangerMessage.setText(item.getSafeDangerMessage());
@@ -205,17 +210,32 @@ public class FirstFragment extends Fragment {
             }
         }
     }
-    private float[] fillRandomValues(int length, int max, int min) {
-        Random random = new Random();
+    private float[] lineFillYValues(int length, int max, int min) {
+        float[] newlineValues = new float[length];
 
-        float[] newRandomValues = new float[length];
-        for (int i = 0; i < newRandomValues.length; i++) {
-            newRandomValues[i] = random.nextInt(max - min + 1) - min;
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM월 dd일"); // 월, 일 받아오기
+        Calendar calendar = new GregorianCalendar();
+
+        for (int i = -6; i < 1; i++) {
+            calendar.setTime(date); // 오늘 날짜로 다시 Calendar 변경
+            calendar.add(Calendar.DAY_OF_MONTH, i);
+            Date calculatedDate = calendar.getTime();
+            strDateForline = sdf.format(calculatedDate);
+
+            SharedPreferences strabismusCountPref = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+            SharedPreferences.Editor strabismusCountEditor = strabismusCountPref.edit();
+            strabismusCount = strabismusCountPref.getInt(strDateForline + "strabismusCount", 0);
+
+            // if 문으로 strabismusCount / 6 해서 프레임수로 나눠줘야 됨.
+
+            newlineValues[i+6] = Float.valueOf(strabismusCount);
         }
-        return newRandomValues;
+        return newlineValues;
     }
 
-    private float[] barFillXValues(int length, int max, int min) {
+    private float[] barandlineFillXValues(int length, int max, int min) {
         float[] newBarValues = new float[length]; // bar 값
 
         long now = System.currentTimeMillis();

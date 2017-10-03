@@ -5,12 +5,14 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -45,6 +47,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class BackgroundService extends Service implements CameraBridgeViewBase.CvCameraViewListener2 {
     private static final String TAG = "OpenCV";
@@ -88,6 +92,11 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     private double rightEyePosition = 0.0;
     private double distance = 0.0;
     private int strabismusCount = 0;
+    private Context context; // 전역 Context(Preference를 위한 Context)
+    private SharedPreferences strabismusCountPref; // 전역 SharedPreferences 를 생성
+    private SharedPreferences.Editor strabismusCountEditor;
+
+
 
     static {
         OpenCVLoader.initDebug();
@@ -523,10 +532,23 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                     strabismus = false;
                 } else {
                     strabismus = true;
-                    strabismusCount++;
+                    strabismusCount++; // Int 형
+
+                    long date = System.currentTimeMillis(); // 시간받아오기
+                    Date nowDate = new Date(date); // Date 타입 변경
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM월 dd일"); // 월, 일 받아오기
+                    String dateTemp = sdf.format(nowDate);
+
+                    strabismusCountPref = PreferenceManager.getDefaultSharedPreferences(this);
+                    strabismusCountEditor = strabismusCountPref.edit();
+
+                    setPreference(dateTemp+"strabismusCount", strabismusCount);
                 }
-                Log.e("Strabismus", String.valueOf(strabismus));
-                Log.e("Strabisums Count", String.valueOf(strabismusCount));
+
+
+                // Log.e("Strabismus", String.valueOf(strabismus));
+                // Log.e("Strabisums Count", String.valueOf(strabismusCount));
+
                 count = 0;
 
                 return strabismus;
@@ -566,6 +588,29 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
             // TODO Auto-generated catch block
             Log.e("error", e.getMessage() + e.getCause());
             e.printStackTrace();
+        }
+    }
+
+    private int getPreference(String id){
+        int value = strabismusCountPref.getInt(id, -1);
+
+        return value;
+    }
+
+    private void setPreference(String id, int value){
+        int getValue = getPreference(id);
+
+        if(getValue == -1) {
+            strabismusCountEditor.putInt(id, value);
+            strabismusCountEditor.commit();
+        }
+        else{
+            strabismusCountEditor.clear();
+            strabismusCountEditor.commit();
+            // 기존 값 초기화
+            strabismusCountEditor.putInt(id, value);
+            strabismusCountEditor.commit();
+            // put Int
         }
     }
 }
