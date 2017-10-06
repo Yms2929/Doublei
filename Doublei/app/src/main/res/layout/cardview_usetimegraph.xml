@@ -41,12 +41,12 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="35dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:orientation="horizontal">
 
-                <com.hrules.charter.CharterYLabels
+                <com.example.doublei.GraphLibrary.CharterYLabels
                     android:id="@+id/charter_bar_YLabel"
                     android:layout_width="20dp"
                     android:layout_height="180dp" />
@@ -56,12 +56,12 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.hrules.charter.CharterBar
+                    <com.example.doublei.GraphLibrary.CharterBar
                         android:id="@+id/charter_bar_with_XLabel"
                         android:layout_width="fill_parent"
                         android:layout_height="180dp" />
 
-                    <com.hrules.charter.CharterXLabels
+                    <com.example.doublei.GraphLibrary.CharterXLabels
                         android:id="@+id/charter_bar_XLabel"
                         android:layout_width="fill_parent"
                         android:layout_height="20dp" />

@@ -51,7 +51,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
-    compile 'com.hrules:charter:1.5.1'
+//    compile 'com.hrules:charter:1.5.1'
     testCompile 'junit:junit:4.12'
     compile 'javax.annotation:javax.annotation-api:1.2'
 }

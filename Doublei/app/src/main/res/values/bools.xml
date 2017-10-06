@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <bool name="default_barPaintBackground">true</bool>
+  <bool name="default_animState">true</bool>
+  <bool name="default_autoShow">true</bool>
+  <bool name="default_stickyEdges">true</bool>
+  <bool name="default_indicatorVisible">true</bool>
+  <bool name="default_fullWidth">false</bool>
+  <bool name="default_showGridLinesX">false</bool>
+  <bool name="default_showGridLinesY">false</bool>
+  <bool name="default_labelAllCaps">false</bool>
+</resources>
