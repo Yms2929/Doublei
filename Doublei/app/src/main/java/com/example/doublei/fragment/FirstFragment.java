@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -11,13 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.doublei.R;
-import com.hrules.charter.CharterBar;
-import com.hrules.charter.CharterLine;
-import com.hrules.charter.CharterXLabels;
-import com.hrules.charter.CharterYLabels;
+import com.example.doublei.GraphLibrary.CharterBar;
+import com.example.doublei.GraphLibrary.CharterLine;
+import com.example.doublei.GraphLibrary.CharterXLabels;
+import com.example.doublei.GraphLibrary.CharterYLabels;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,7 +25,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Random;
 
 public class FirstFragment extends Fragment {
     View view;
@@ -36,11 +35,16 @@ public class FirstFragment extends Fragment {
     private static final int DEFAULT_RANDOM_VALUE_MIN = 10;
     private static final int DEFAULT_RANDOM_VALUE_MAX = 100;
 
+    private float[] lineYValues;
     private float[] lineValues;
-    private float[] barXValues;
     private float[] barYValues;
+    private float[] barValues;
+    private String[] barandlineXValues;
     int[] barColors;
     String strDate = "";
+    private String strDateForline = "";
+
+    int strabismusCount;
 
     class GraphInformation {
         String graphName;
@@ -69,12 +73,13 @@ public class FirstFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         initializeData();
 
-        lineValues = fillRandomValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // line Value
-        barXValues = barFillXValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // bar Value
+        barandlineXValues = barandlineFillXValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // line Value
+        lineYValues = lineFillYValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // line Value
+        lineValues = lineFillYValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // line Value
         barYValues = barFillYValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // bar Value
-
+        barValues = barFillYValues(DEFAULT_ITEMS_COUNT, DEFAULT_RANDOM_VALUE_MAX, DEFAULT_RANDOM_VALUE_MIN); // bar Value
         Resources res = getResources();
-        barColors = new int[] {
+        barColors = new int[]{
                 res.getColor(R.color.lightBlue500), res.getColor(R.color.lightBlue400),
                 res.getColor(R.color.lightBlue300)
         };
@@ -82,9 +87,9 @@ public class FirstFragment extends Fragment {
         return view;
     }
 
-    private void initializeData() {//Textview 초기화
+    private void initializeData() { //Textview 초기화
         Graphs = new ArrayList<>();
-        Graphs.add(new GraphInformation("사시 발견 횟수", "안전"));
+        Graphs.add(new GraphInformation("사시 의심 횟수", "안전"));
         Graphs.add(new GraphInformation("스마트폰 사용 시간", "안전"));
     }
 
@@ -118,38 +123,26 @@ public class FirstFragment extends Fragment {
             if (holder.getItemViewType() == TYPE_Bar) {
                 ViewHolderBar mholder = (ViewHolderBar) holder;
                 mholder.charterBarLabelX.setStickyEdges(false);
-                mholder.charterBarLabelX.setVisibilityPattern(new boolean[] { true, false });
-                mholder.charterBarLabelX.setValues(barXValues);
+                mholder.charterBarLabelX.setValues(barandlineXValues);
 
-                mholder.charterBarYLabel.setVisibilityPattern(new boolean[] { true, false });
                 mholder.charterBarYLabel.setValues(barYValues, true);
 
-                mholder.charterBarWithLabel.setValues(barYValues);
+                mholder.charterBarWithLabel.setValues(barValues);
                 mholder.charterBarWithLabel.setColors(barColors);
 
                 mholder.graphName.setText(item.getGraphName());
                 mholder.safeDangerMessage.setText(item.getSafeDangerMessage());
-                mholder.cardview.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(context, item.getGraphName(), Toast.LENGTH_SHORT).show();
-                    }
-                });
             } else if (holder.getItemViewType() == TYPE_Line) {
                 ViewHolderLine mholder = (ViewHolderLine) holder;
                 mholder.charterLineLabelX.setStickyEdges(true);
-                mholder.charterLineLabelX.setValues(lineValues);
-                mholder.charterLineYLabel.setValues(lineValues, true);
+                mholder.charterLineLabelX.setValues(barandlineXValues);
+
+                mholder.charterLineYLabel.setValues(lineYValues, true); // false로 규정
+
                 mholder.charterLineWithLabel.setValues(lineValues);
 
                 mholder.graphName.setText(item.getGraphName());
                 mholder.safeDangerMessage.setText(item.getSafeDangerMessage());
-                mholder.cardview.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(context, item.getGraphName(), Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
         }
 
@@ -181,9 +174,9 @@ public class FirstFragment extends Fragment {
                 graphName = (TextView) itemView.findViewById(R.id.GraphName);
                 safeDangerMessage = (TextView) itemView.findViewById(R.id.safeDanger);
                 cardview = (CardView) itemView.findViewById(R.id.Cardview);
-                charterBarWithLabel = (CharterBar)itemView.findViewById(R.id.charter_bar_with_XLabel);
-                charterBarLabelX = (CharterXLabels)itemView.findViewById(R.id.charter_bar_XLabel);
-                charterBarYLabel = (CharterYLabels)itemView.findViewById(R.id.charter_bar_YLabel);
+                charterBarWithLabel = (CharterBar) itemView.findViewById(R.id.charter_bar_with_XLabel);
+                charterBarLabelX = (CharterXLabels) itemView.findViewById(R.id.charter_bar_XLabel);
+                charterBarYLabel = (CharterYLabels) itemView.findViewById(R.id.charter_bar_YLabel);
             }
         }
 
@@ -199,40 +192,56 @@ public class FirstFragment extends Fragment {
                 graphName = (TextView) itemView.findViewById(R.id.GraphName);
                 safeDangerMessage = (TextView) itemView.findViewById(R.id.safeDanger);
                 cardview = (CardView) itemView.findViewById(R.id.Cardview);
-                charterLineWithLabel = (CharterLine)itemView.findViewById(R.id.charter_line_with_XLabel);
-                charterLineLabelX = (CharterXLabels)itemView.findViewById(R.id.charter_line_XLabel);
-                charterLineYLabel = (CharterYLabels)itemView.findViewById(R.id.charter_line_YLabel);
+                charterLineWithLabel = (CharterLine) itemView.findViewById(R.id.charter_line_with_XLabel);
+                charterLineLabelX = (CharterXLabels) itemView.findViewById(R.id.charter_line_XLabel);
+                charterLineYLabel = (CharterYLabels) itemView.findViewById(R.id.charter_line_YLabel);
             }
         }
     }
-    private float[] fillRandomValues(int length, int max, int min) {
-        Random random = new Random();
 
-        float[] newRandomValues = new float[length];
-        for (int i = 0; i < newRandomValues.length; i++) {
-            newRandomValues[i] = random.nextInt(max - min + 1) - min;
+    private float[] lineFillYValues(int length, int max, int min) {
+        float[] newlineValues = new float[length];
+
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM월 dd일"); // 월, 일 받아오기
+        Calendar calendar = new GregorianCalendar();
+
+        for (int i = -6; i < 1; i++) {
+            calendar.setTime(date); // 오늘 날짜로 다시 Calendar 변경
+            calendar.add(Calendar.DAY_OF_MONTH, i);
+            Date calculatedDate = calendar.getTime();
+            strDateForline = sdf.format(calculatedDate);
+
+            SharedPreferences strabismusCountPref = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+            SharedPreferences.Editor strabismusCountEditor = strabismusCountPref.edit();
+            strabismusCount = strabismusCountPref.getInt(strDateForline + "strabismusCount", 0);
+
+            // if 문으로 strabismusCount / 6 해서 프레임수로 나눠줘야 됨.
+
+            newlineValues[i + 6] = Float.valueOf(strabismusCount);
         }
-        return newRandomValues;
+        return newlineValues;
     }
 
-    private float[] barFillXValues(int length, int max, int min) {
-        float[] newBarValues = new float[length]; // bar 값
+    private String[] barandlineFillXValues(int length, int max, int min) {
+        String[] newBarVlaues = new String[length];
 
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat sdf = new SimpleDateFormat("dd");
         Calendar calendar = new GregorianCalendar();
 
-        for (int i = -6; i <1 ; i++) {
+        for (int i = -6; i < 1; i++) {
             calendar.setTime(date); // 오늘 날짜로 다시 Calendar 변경
             calendar.add(Calendar.DAY_OF_MONTH, i);
             Date calculatedDate = calendar.getTime();
             strDate = sdf.format(calculatedDate);
 
-            newBarValues[i+6] = Float.valueOf(strDate);
+            newBarVlaues[i + 6] = String.valueOf(Integer.parseInt(strDate)) + "일";
+//            newBarValues[i + 6] = Float.valueOf(strDate);
         }
-
-       return newBarValues;
+        return newBarVlaues;
     }
 
     private float[] barFillYValues(int length, int max, int min) {
@@ -245,27 +254,25 @@ public class FirstFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("MM월 dd일"); // 월, 일 받아오기
         Calendar calendar = new GregorianCalendar();
 
-        for (int i = -6; i <1 ; i++) {
+        for (int i = -6; i < 1; i++) {
             calendar.setTime(date); // 오늘 날짜로 다시 Calendar 변경
             calendar.add(Calendar.DAY_OF_MONTH, i);
             Date calculatedDate = calendar.getTime();
             strDate = sdf.format(calculatedDate);
 
-            newBarStringValues[i+6] = strDate;
-            SharedPreferences timePref = this.getActivity().getSharedPreferences(strDate,Context.MODE_PRIVATE);
+            newBarStringValues[i + 6] = strDate;
+            SharedPreferences timePref = this.getActivity().getSharedPreferences(strDate, Context.MODE_PRIVATE);
             SharedPreferences.Editor timeEditor = timePref.edit();
-            String checkDate = timePref.getString(strDate,"0"); // key 값으로 dateTemp를 주고 그에 해당하는 Value를 가져옴. 없으면 공백("")
+            String checkDate = timePref.getString(strDate, "0"); // key 값으로 dateTemp를 주고 그에 해당하는 Value를 가져옴. 없으면 공백("")
             time = Integer.valueOf(checkDate);
-            if(time > 60){
-                time = time/60;
-                newBarValues[i+6] = Float.valueOf(time);
-            }
-            else{
+            if (time > 60) {
+                time = time / 60;
+                newBarValues[i + 6] = Float.valueOf(time);
+            } else {
                 time = 0;
-                newBarValues[i+6] = Float.valueOf(time);
+                newBarValues[i + 6] = Float.valueOf(time);
             }
         }
-
         return newBarValues;
     }
 }

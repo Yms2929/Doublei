@@ -6,5 +6,14 @@ Refer to App Widget Documentation for margin information
 http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     -->
     <dimen name="widget_margin">8dp</dimen>
-
+    <dimen name="default_strokeSize">2dp</dimen>
+    <dimen name="default_indicatorSize">6dp</dimen>
+    <dimen name="default_indicatorStrokeSize">1dp</dimen>
+    <dimen name="default_barMargin">2dp</dimen>
+    <dimen name="default_labelSize">10sp</dimen>
+    <dimen name="default_markerStrokeSize">1dp</dimen>
+    <dimen name="default_separatorStrokeSize">0dp</dimen>
+    <dimen name="default_markerWidthCorrection">0dp</dimen>
+    <dimen name="default_barMinHeightCorrection">2dp</dimen>
+    <dimen name="default_gridLinesStrokeSize">1dp</dimen>
 </resources>
