@@ -1,4 +1,4 @@
-package com.example.doublei;
+package com.example.doublei.MainFuction;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -18,6 +18,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+
+import com.example.doublei.R;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -82,8 +84,8 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     private View mPopupView; // 항상 보이게 할 뷰
     private WindowManager mManager; // 최상위에 떠있는 뷰 만들기 위해
     private WindowManager.LayoutParams mParams; // 뷰의 위치 및 크기
-    private static int cameraWidth = 320; // 320 280 / 480 320 / 640 480 / 800 600 / 1280 720
-    private static int cameraHeight = 240;
+    private static int cameraWidth = 180; // 320 240 / 480 360 / 640 480 / 800 600 / 1280 720
+    private static int cameraHeight = 145; // 4 : 3 / 4 : 3 / 4 : 3 / 4 : 3 / 16 : 9
     private double leftEyePosition = 0.0;
     private double rightEyePosition = 0.0;
     private double distance = 0.0;
@@ -266,10 +268,8 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-
                     break;
                 case 1:
-
                     break;
                 default:
                     break;
@@ -318,11 +318,11 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         Rect[] facesArray = faces.toArray();
         Rect[] eyesArray = eyes.toArray();
 
-        //        for (int i = 0; i < facesArray.length; i++) // 검출된 얼굴이나 눈을 사각형으로 그리기
+//        for (int i = 0; i < facesArray.length; i++) // 검출된 얼굴이나 눈을 사각형으로 그리기
 //        {
 //            Rect r = facesArray[i];
 //            Imgproc.rectangle(mRgbaT, r.tl(), r.br(), FACE_RECT_COLOR, 3); // 얼굴 그리기
-
+//
 //            Mat faceArea = mGrayT.submat(r);
 //
 //            int ret;
@@ -330,20 +330,13 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 //
 //            if (ret > 0) {
 //                trueFace = true;
-//                Message msg = new Message();
-//                String result = "same person";
-//                msg.obj = result;
-//                mHandler.sendMessage(msg);
-//
+////                Message msg = new Message();
+////                String result = "same person";
+////                msg.obj = result;
 //                Log.e("face Test", "Two images are same");
 //            }
 //            else {
 //                trueFace = false;
-//                Message msg = new Message();
-//                String result = "different person";
-//                msg.obj = result;
-//                mHandler.sendMessage(msg);
-//
 //                Log.e("face Test", "Two images are different");
 //            }
 //        }
@@ -378,11 +371,10 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
                 Imgproc.threshold(inputGrayImage, inputGrayImage, 0, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU); // 이진화 OTSU
 
-//                if (Strabismus(inputGrayImage)) { // 사시가 발견되면
-//
-//                }
-                SaveBmp(inputGrayImage, mPath); // 내부저장소에 눈 이미지 저장
-                SaveBmp(eyeRgbImage, mPath);
+                if (Strabismus(inputGrayImage)) { // 사시가 발견되면
+                    SaveBmp(inputGrayImage, mPath); // 내부저장소에 눈 이미지 저장
+                    SaveBmp(eyeRgbImage, mPath);
+                }
             }
         }
 
@@ -390,12 +382,12 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     }
 
     public void showNotification(double distance) { // 팝업 알림
-        if(distance > 80.0) {
+        if(distance > 60.0) {
             android.support.v4.app.NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(this)
-                            .setSmallIcon(R.drawable.ic_pororoclose)
+                            .setSmallIcon(R.drawable.distance)
                             .setContentTitle("경고 알림")
-                            .setContentText("스마트폰과 얼굴 사이의 거리가 너무 가까워요.")
+                            .setContentText("스마트폰과 얼굴 사이 거리가 너무 가까워요")
                             .setDefaults(Notification.DEFAULT_ALL)
                             .setPriority(Notification.PRIORITY_HIGH);
 
@@ -519,14 +511,15 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
             Log.e("White Count", String.valueOf(whiteCount));
 
             if (count == 1) { // 두눈 다 체크 했을때
-                if ((leftArea[0] && leftArea[1]) || (middleArea[0] && middleArea[1]) || (rightArea[0] && rightArea[1])) {
+                if ((rightArea[0] && leftArea[1] )|| (leftArea[0] && leftArea[1]) || (middleArea[0] && middleArea[1]) || (rightArea[0] && rightArea[1])) {
                     strabismus = false;
                 } else {
                     strabismus = true;
                     strabismusCount++;
                 }
-                Log.e("Strabismus", String.valueOf(strabismus));
+                Log.e("Strabismus Count", String.valueOf(strabismus));
                 Log.e("Strabisums Count", String.valueOf(strabismusCount));
+
                 count = 0;
 
                 return strabismus;

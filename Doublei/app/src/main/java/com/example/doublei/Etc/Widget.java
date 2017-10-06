@@ -12,7 +12,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.example.doublei.BackgroundService;
+import com.example.doublei.MainFuction.BackgroundService;
 import com.example.doublei.R;
 
 /**

@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.doublei.MainActivity;
+import com.example.doublei.Etc.MainActivity;
 import com.example.doublei.R;
 
 import java.io.BufferedOutputStream;

@@ -14,19 +14,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.doublei.MainFuction.TrainingActivity;
 import com.example.doublei.R;
 import com.example.doublei.Setting.Alarm;
 import com.example.doublei.Setting.ChildPicture;
 import com.example.doublei.Setting.Hospital;
 import com.example.doublei.Setting.PreviousRecord;
-import com.example.doublei.Setting.Profile;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SecondFragment extends Fragment {
     ListView list;
-    String[] titles = {"아이 프로필", "눈 사진", "기록 보기", "병원 찾기", "알람 설정", "핸드폰 거리 메세지", "기타"};
+    String[] titles = {"얼굴 등록", "눈 사진", "기록 보기", "병원 찾기", "알람 설정", "거리 경고 메세지", "기타"};
 ///    String[] titles = {"My profile","Eye Pictures","Record","Hospital","Alarm","Distane Message","Settings"};
     int[] imgs = {R.drawable.ic_iconbaby,
             R.drawable.ic_iconeye,
@@ -54,7 +54,7 @@ public class SecondFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i) {
                     case 0:
-                        startActivity(new Intent(getActivity(), Profile.class));
+                        startActivity(new Intent(getActivity(), TrainingActivity.class));
                         break;
                     case 1:
                         startActivity(new Intent(getActivity(), ChildPicture.class));

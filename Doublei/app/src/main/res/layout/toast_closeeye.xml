@@ -9,7 +9,7 @@
         android:id="@+id/toastImage"
         android:layout_width="200dp"
         android:layout_height="150dp"
-        android:src="@drawable/ic_pororoclose" />
+        android:src="@drawable/distance" />
 
     <TextView
         android:id="@+id/toastText"

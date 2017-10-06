@@ -1,4 +1,4 @@
-package com.example.doublei;
+package com.example.doublei.Etc;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
@@ -13,6 +13,7 @@ import com.example.doublei.Fragment.FirstFragment;
 import com.example.doublei.Fragment.HomeFragment;
 import com.example.doublei.Fragment.SecondFragment;
 import com.example.doublei.Fragment.ViewPagerAdapter;
+import com.example.doublei.R;
 
 import java.util.ArrayList;
 

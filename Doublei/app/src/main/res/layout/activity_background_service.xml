@@ -6,7 +6,7 @@
 
     <org.opencv.android.JavaCameraView
         android:id="@+id/java_surface_view"
-        android:layout_width="140dp"
-        android:layout_height="140dp"/>
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
 
 </RelativeLayout>

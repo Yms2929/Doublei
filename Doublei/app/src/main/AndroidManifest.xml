@@ -47,10 +47,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".Etc.MainActivity" />
         <activity android:name=".Setting.ChildPicture" />
 
-        <service android:name=".BackgroundService" />
+        <service android:name=".MainFuction.BackgroundService" />
 
         <activity android:name=".Setting.Profile" />
         <activity android:name=".Setting.Alarm" />
@@ -68,7 +68,10 @@
         <receiver android:name=".Setting.BroadcastD" />
 
         <activity android:name=".Setting.Hospital" />
-        <activity android:name=".Setting.PreviousRecord"/>
+        <activity android:name=".Setting.PreviousRecord" />
+        <activity android:name=".MainFuction.TrainingActivity"
+            android:screenOrientation="landscape">
+        </activity>
 
     </application>
 

@@ -84,8 +84,8 @@ public class FirstFragment extends Fragment {
 
     private void initializeData() {//Textview 초기화
         Graphs = new ArrayList<>();
-        Graphs.add(new GraphInformation("사시 의심 횟수", "안전"));
-        Graphs.add(new GraphInformation("스마티폰 사용 시간", "안전"));
+        Graphs.add(new GraphInformation("사시 발견 횟수", "안전"));
+        Graphs.add(new GraphInformation("스마트폰 사용 시간", "안전"));
     }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
