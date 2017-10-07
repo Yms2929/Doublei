@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.example.doublei.Etc.Singleton;
 import com.example.doublei.R;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -524,7 +525,9 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                     strabismus = false;
                 } else {
                     strabismus = true;
+                    strabismusCount = Singleton.getInstance().getStrabimusCount();
                     strabismusCount++; // Int 형
+                    Singleton.getInstance().setStrabimusCount(strabismusCount);
 
                     long date = System.currentTimeMillis(); // 시간받아오기
                     Date nowDate = new Date(date); // Date 타입 변경
