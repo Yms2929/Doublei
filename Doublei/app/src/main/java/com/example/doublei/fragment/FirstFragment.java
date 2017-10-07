@@ -13,11 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.doublei.R;
 import com.example.doublei.GraphLibrary.CharterBar;
 import com.example.doublei.GraphLibrary.CharterLine;
 import com.example.doublei.GraphLibrary.CharterXLabels;
 import com.example.doublei.GraphLibrary.CharterYLabels;
+import com.example.doublei.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,6 +66,7 @@ public class FirstFragment extends Fragment {
 
     private List<GraphInformation> Graphs;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_first, container, false);
@@ -89,7 +90,7 @@ public class FirstFragment extends Fragment {
 
     private void initializeData() { //Textview 초기화
         Graphs = new ArrayList<>();
-        Graphs.add(new GraphInformation("사시 의심 횟수", "안전"));
+        Graphs.add(new GraphInformation("사시 의심 횟수", ""));
         Graphs.add(new GraphInformation("스마트폰 사용 시간", "안전"));
     }
 
@@ -217,7 +218,9 @@ public class FirstFragment extends Fragment {
             SharedPreferences.Editor strabismusCountEditor = strabismusCountPref.edit();
             strabismusCount = strabismusCountPref.getInt(strDateForline + "strabismusCount", 0);
 
-            // if 문으로 strabismusCount / 6 해서 프레임수로 나눠줘야 됨.
+            if(strabismusCount>6){
+                strabismusCount=strabismusCount/6;
+            }
 
             newlineValues[i + 6] = Float.valueOf(strabismusCount);
         }
@@ -239,7 +242,7 @@ public class FirstFragment extends Fragment {
             strDate = sdf.format(calculatedDate);
 
             newBarVlaues[i + 6] = String.valueOf(Integer.parseInt(strDate)) + "일";
-//            newBarValues[i + 6] = Float.valueOf(strDate);
+            // newBarValues[i + 6] = Float.valueOf(strDate);
         }
         return newBarVlaues;
     }
