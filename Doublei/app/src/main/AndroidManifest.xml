@@ -33,11 +33,11 @@
         android:name="android.hardware.camera.front.autofocus"
         android:required="false" />
 
+    <!-- android:label="@string/app_name" -->
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Etc.SplashScreen">
@@ -48,10 +48,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Etc.MainActivity" />
-        <activity android:name=".Setting.ChildPicture" />
 
         <service android:name=".MainFuction.BackgroundService" />
 
+        <activity android:name=".Setting.ChildPicture" />
         <activity android:name=".Setting.Profile" />
         <activity android:name=".Setting.Alarm" />
 
@@ -69,10 +69,10 @@
 
         <activity android:name=".Setting.Hospital" />
         <activity android:name=".Setting.PreviousRecord" />
-        <activity android:name=".MainFuction.TrainingActivity"
-            android:screenOrientation="landscape">
-        </activity>
-
+        <activity
+            android:name=".MainFuction.TrainingActivity"
+            android:screenOrientation="landscape"></activity>
+        <activity android:name=".Setting.GalleryActivity"></activity>
     </application>
 
 </manifest>

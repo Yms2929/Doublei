@@ -3,6 +3,7 @@ package com.example.doublei.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -13,11 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.doublei.R;
 import com.example.doublei.GraphLibrary.CharterBar;
 import com.example.doublei.GraphLibrary.CharterLine;
 import com.example.doublei.GraphLibrary.CharterXLabels;
 import com.example.doublei.GraphLibrary.CharterYLabels;
+import com.example.doublei.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,8 +90,8 @@ public class FirstFragment extends Fragment {
 
     private void initializeData() { //Textview 초기화
         Graphs = new ArrayList<>();
-        Graphs.add(new GraphInformation("사시 의심 횟수", "안전"));
-        Graphs.add(new GraphInformation("스마트폰 사용 시간", "안전"));
+        Graphs.add(new GraphInformation("사시 의심 횟수", ""));
+        Graphs.add(new GraphInformation("스마트폰 사용 시간(분)", "주의"));
     }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
@@ -132,6 +133,7 @@ public class FirstFragment extends Fragment {
 
                 mholder.graphName.setText(item.getGraphName());
                 mholder.safeDangerMessage.setText(item.getSafeDangerMessage());
+                mholder.safeDangerMessage.setTextColor(Color.RED);
             } else if (holder.getItemViewType() == TYPE_Line) {
                 ViewHolderLine mholder = (ViewHolderLine) holder;
                 mholder.charterLineLabelX.setStickyEdges(true);
@@ -163,7 +165,7 @@ public class FirstFragment extends Fragment {
         }
 
         public class ViewHolderBar extends ViewHolder {
-            TextView graphName, safeDangerMessage;
+            public TextView graphName, safeDangerMessage;
             CardView cardview;
             CharterBar charterBarWithLabel;
             CharterXLabels charterBarLabelX;
@@ -217,6 +219,12 @@ public class FirstFragment extends Fragment {
             SharedPreferences.Editor strabismusCountEditor = strabismusCountPref.edit();
             strabismusCount = strabismusCountPref.getInt(strDateForline + "strabismusCount", 0);
 
+            if (strabismusCount < 6) {
+                strabismusCount = 0;
+            }
+            if (strabismusCount >= 6) {
+                strabismusCount = strabismusCount/6;
+            }
             // if 문으로 strabismusCount / 6 해서 프레임수로 나눠줘야 됨.
 
             newlineValues[i + 6] = Float.valueOf(strabismusCount);
@@ -265,10 +273,14 @@ public class FirstFragment extends Fragment {
             SharedPreferences.Editor timeEditor = timePref.edit();
             String checkDate = timePref.getString(strDate, "0"); // key 값으로 dateTemp를 주고 그에 해당하는 Value를 가져옴. 없으면 공백("")
             time = Integer.valueOf(checkDate);
-            if (time > 60) {
+            if (time >= 60) {
                 time = time / 60;
+                if(time>=55){
+                    View v = null;
+                }
                 newBarValues[i + 6] = Float.valueOf(time);
-            } else {
+            }
+            else {
                 time = 0;
                 newBarValues[i + 6] = Float.valueOf(time);
             }

@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.example.doublei.Etc.Singleton;
 import com.example.doublei.R;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -60,7 +61,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     public static final int NATIVE_DETECTOR = 1;
     private static final int frontCam = 1;
     private static final int backCam = 0;
-    private boolean faceState = false;
+    private int cameraState = 1;
     private Mat mRgba;
     private Mat mGray;
     private Mat mRgbaT;
@@ -75,20 +76,21 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     private int mAbsoluteFaceSize = 0;
     private String mPath = "";
     private JavaCameraView mOpenCvCameraView;
-    int count = 0;
-    int imageCount = 0;
-    int[] leftCount = new int[2];
-    int[] middleCount = new int[2];
-    int[] rightCount = new int[2];
-    boolean[] leftArea = new boolean[2];
-    boolean[] middleArea = new boolean[2];
-    boolean[] rightArea = new boolean[2];
-    boolean strabismus = false;
-    boolean trueFace = false;
+    private int count = 0;
+    private int imageCount = 0;
+    private int second = 0;
+    public int[] leftCount = new int[2];
+    public int[] middleCount = new int[2];
+    public int[] rightCount = new int[2];
+    public boolean[] leftArea = new boolean[2];
+    public boolean[] middleArea = new boolean[2];
+    public boolean[] rightArea = new boolean[2];
+    public boolean strabismus = false;
+    public boolean trueFace = false;
     private View mPopupView; // 항상 보이게 할 뷰
     private WindowManager mManager; // 최상위에 떠있는 뷰 만들기 위해
     private WindowManager.LayoutParams mParams; // 뷰의 위치 및 크기
-    private static int cameraWidth = 180; // 320 240 / 480 360 / 640 480 / 800 600 / 1280 720
+    private static int cameraWidth = 180; // 180 145 // 320 240 / 480 360 / 640 480 / 800 600 / 1280 720
     private static int cameraHeight = 145; // 4 : 3 / 4 : 3 / 4 : 3 / 4 : 3 / 16 : 9
     private double leftEyePosition = 0.0;
     private double rightEyePosition = 0.0;
@@ -97,8 +99,6 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     private Context context; // 전역 Context(Preference를 위한 Context)
     private SharedPreferences strabismusCountPref; // 전역 SharedPreferences 를 생성
     private SharedPreferences.Editor strabismusCountEditor;
-
-
 
     static {
         OpenCVLoader.initDebug();
@@ -117,8 +117,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                {
+                case LoaderCallbackInterface.SUCCESS: {
                     Log.e(TAG, "OpenCV loaded successfully");
 
                     try {
@@ -157,8 +156,8 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                         if (mJavaDetector.empty()) {
                             Log.e(TAG, "Failed to load cascade classifier");
                             mJavaDetector = null;
-                        }
-                        else Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
+                        } else
+                            Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
 
                         mJavaDetectorEye = new CascadeClassifier(mCascadeFileEye.getAbsolutePath());
                         mJavaDetectorEye.load(mCascadeFileEye.getAbsolutePath());
@@ -166,8 +165,8 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                         if (mJavaDetectorEye.empty()) {
                             Log.e(TAG, "Failed to load cascade classifier");
                             mJavaDetectorEye = null;
-                        }
-                        else Log.i(TAG, "Loaded cascade classifier from " + mCascadeFileEye.getAbsolutePath());
+                        } else
+                            Log.i(TAG, "Loaded cascade classifier from " + mCascadeFileEye.getAbsolutePath());
 
                         cascadeDir.delete();
                         cascadeDirEye.delete();
@@ -180,11 +179,12 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                     mOpenCvCameraView.setMaxFrameSize(cameraWidth, cameraHeight); // 카메라 최대크기 지정
                     mOpenCvCameraView.enableView(); // 카메라뷰 활성화
 
-                } break;
-                default:
-                {
+                }
+                break;
+                default: {
                     super.onManagerConnected(status);
-                } break;
+                }
+                break;
             }
         }
     };
@@ -204,8 +204,9 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, PixelFormat.TRANSLUCENT); // 레이아웃
 
         mOpenCvCameraView = (JavaCameraView) mPopupView.findViewById(R.id.java_surface_view);
-        mOpenCvCameraView.setCameraIndex(frontCam);
+        mOpenCvCameraView.setCameraIndex(backCam);
         mOpenCvCameraView.setCvCameraViewListener(this);
+        cameraState = backCam;
 
         mParams.width = cameraWidth;
         mParams.height = cameraHeight;
@@ -217,8 +218,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         if (!OpenCVLoader.initDebug()) {
             Log.e(TAG, "OPENCV initalization error");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_2, this, mLoaderCallback);
-        }
-        else {
+        } else {
             Log.e(TAG, "OPENCV initialization success");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
@@ -227,14 +227,13 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         Log.e("Path", mPath);
 
         boolean success = (new File(mPath)).mkdirs();
-        if (!success)
-        {
-            Log.e("Error","Error creating directory");
+        if (!success) {
+            Log.e("Error", "Error creating directory");
         }
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId){
+    public int onStartCommand(Intent intent, int flags, int startId) {
         // TODO Auto-generated method stub
 
         startForeground(1, new Notification());
@@ -291,13 +290,25 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
 
-        mRgbaT = mRgba.t();
-        Core.flip(mRgba.t(), mRgbaT, -1);
-        Imgproc.resize(mRgbaT, mRgbaT, mRgba.size());
+        if (cameraState == frontCam) {
+            mRgbaT = mRgba.t();
+            Core.flip(mRgba.t(), mRgbaT, -1);
+            Imgproc.resize(mRgbaT, mRgbaT, mRgba.size());
 
-        mGrayT = mGray.t();
-        Core.flip(mGray.t(), mGrayT, -1);
-        Imgproc.resize(mGrayT, mGrayT, mGray.size());
+            mGrayT = mGray.t();
+            Core.flip(mGray.t(), mGrayT, -1);
+            Imgproc.resize(mGrayT, mGrayT, mGray.size());
+        }
+
+        else if (cameraState == backCam) {
+            mRgbaT = mRgba.t();
+            Core.flip(mRgba.t(), mRgbaT, 1);
+            Imgproc.resize(mRgbaT, mRgbaT, mRgba.size());
+
+            mGrayT = mGray.t();
+            Core.flip(mGray.t(), mGrayT, 1);
+            Imgproc.resize(mGrayT, mGrayT, mGray.size());
+        }
 
         if (mAbsoluteFaceSize == 0) {
             int height = mGrayT.rows();
@@ -356,33 +367,38 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                 Rect r = eyesArray[i];
                 Rect eyearea = null;
                 Rect eyeareaOriginal = new Rect(r.x, r.y, r.width, r.height); // 기본으로 검출된 눈 영역 크기
-//                Rect eyearea = new Rect(r.x + r.width/6, (int)(r.y + r.height/1.8), (int)(r.width - r.width/2.5), (int)(r.height/3.5)); // 검출된 눈 영역 크기 조절 mRgba
+//                eyearea = new Rect(r.x + r.width/5, (int)(r.y + r.height/1.8), (int)(r.width - r.width/2.5), (int)(r.height/3.8)); // 검출된 눈 영역 크기 조절 mRgba
 
                 if (i == 0) { // 오른눈
-                    eyearea = new Rect(r.x, (int) (r.y + r.height / 1.8), (r.width - r.width/8), (int) (r.height / 4.5)); // 검출된 눈 영역 크기 조절 mRgbaT
+                    eyearea = new Rect(r.x, (int) (r.y + r.height / 1.8), (r.width - r.width / 10), (int) (r.height / 3.5)); // 검출된 눈 영역 크기 조절 mRgbaT
+
                     rightEyePosition = r.x;
                 } else if (i == 1) { // 왼눈
-                    eyearea = new Rect(r.x + r.width/8, (int) (r.y + r.height / 1.8), (r.width - r.width/8), (int) (r.height / 4.5)); // 검출된 눈 영역 크기 조절 mRgbaT
+                    eyearea = new Rect(r.x + r.width / 8, (int) (r.y + r.height / 1.8), (r.width - r.width / 10), (int) (r.height / 3.5)); // 검출된 눈 영역 크기 조절 mRgbaT
+
                     leftEyePosition = r.x;
 
                     distance = Math.abs(rightEyePosition - leftEyePosition);
                     Log.e("Distance 3", String.valueOf(distance));
                 }
 
-                Imgproc.rectangle(mRgbaT, eyearea.tl(), eyearea.br(), EYES_RECT_COLOR, 2); // 조절된 눈 영역 사각형으로 그리기
+//                Imgproc.rectangle(mRgbaT, eyearea.tl(), eyearea.br(), EYES_RECT_COLOR, 2); // 조절된 눈 영역 사각형으로 그리기
 
                 showNotification(distance); // 거리 판단
 
                 Mat inputGrayImage = mGrayT.submat(eyearea); // 그레이 스케일링
+                Mat resultImage = new Mat(); // 결과 이미지
                 Mat eyeRgbImage = mRgbaT.submat(eyeareaOriginal);
 
-                Imgproc.medianBlur(inputGrayImage, inputGrayImage, 3); // 잡음 제거를 위한 미디언블러
+                Imgproc.medianBlur(inputGrayImage, resultImage, 3); // 잡음 제거를 위한 미디언블러
+                Imgproc.threshold(inputGrayImage, resultImage, 80, 255, Imgproc.THRESH_BINARY); // 이진화 OTSU
+//                Imgproc.threshold(inputGrayImage, resultImage, 0, 255, Imgproc.THRESH_OTSU); // 이진화 OTSU
+//                SaveBmp(resultImage, mPath); // 내부저장소에 눈 이미지 저장
 
-                Imgproc.threshold(inputGrayImage, inputGrayImage, 0, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU); // 이진화 OTSU
-
-                if (Strabismus(inputGrayImage)) { // 사시가 발견되면
-                    SaveBmp(inputGrayImage, mPath); // 내부저장소에 눈 이미지 저장
+                if (Strabismus(resultImage)) { // 사시가 발견되면
+//                    SaveBmp(resultImage, mPath); // 내부저장소에 눈 이미지 저장
                     SaveBmp(eyeRgbImage, mPath);
+                    StrabismusNotification();
                 }
             }
         }
@@ -391,11 +407,11 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     }
 
     public void showNotification(double distance) { // 팝업 알림
-        if(distance > 60.0) {
+        if (distance > 60.0) {
             android.support.v4.app.NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(this)
-                            .setSmallIcon(R.drawable.distance)
-                            .setContentTitle("경고 알림")
+                            .setSmallIcon(R.drawable.eyeon)
+                            .setContentTitle("거리 경고")
                             .setContentText("스마트폰과 얼굴 사이 거리가 너무 가까워요")
                             .setDefaults(Notification.DEFAULT_ALL)
                             .setPriority(Notification.PRIORITY_HIGH);
@@ -406,11 +422,23 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
         }
     }
 
+    public void StrabismusNotification() { // 사시 경고 팝업
+        android.support.v4.app.NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.eyeon)
+                        .setContentTitle("사시 발견")
+                        .setContentText("간헐적 사시가 의심됩니다")
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setPriority(Notification.PRIORITY_HIGH);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, mBuilder.build());
+    }
+
     public int CompareFeature(String fileName1, Mat currentImage) { // 이미지 유사 비교
         int retVal = 0;
         long startTime = System.currentTimeMillis();
-
-//        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         Mat image1 = Imgcodecs.imread(fileName1, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE); // 이미지 로드
         Mat image2 = currentImage;
@@ -487,8 +515,8 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
             }
         }
 
-        pixelArea[0] = pixelArea[0] + (pixelArea[0] / 5); // 왼쪽 오른쪽 가중치 주기
-        pixelArea[2] = pixelArea[2] + (pixelArea[2] / 5);
+//        pixelArea[0] = pixelArea[0] + (pixelArea[0] / 4); // 왼쪽 오른쪽 가중치 주기
+//        pixelArea[2] = pixelArea[2] + (pixelArea[2] / 4);
 
         if (pixelArea[0] > pixelArea[1] && pixelArea[0] > pixelArea[2]) {
             maxArea[0] = true;
@@ -502,6 +530,10 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
             maxArea[0] = false;
             maxArea[1] = false;
             maxArea[2] = true;
+        } else if (pixelArea[0] == pixelArea[1] || pixelArea[1] == pixelArea[2]) {
+            maxArea[0] = false;
+            maxArea[1] = true;
+            maxArea[2] = false;
         }
 
         if (count < 2) { // 이미지 2개씩 비교 왼눈 오른눈 1쌍씩
@@ -520,11 +552,15 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
             Log.e("White Count", String.valueOf(whiteCount));
 
             if (count == 1) { // 두눈 다 체크 했을때
-                if ((rightArea[0] && leftArea[1] )|| (leftArea[0] && leftArea[1]) || (middleArea[0] && middleArea[1]) || (rightArea[0] && rightArea[1])) {
+                if ((rightArea[0] && leftArea[1]) || (leftArea[0] && leftArea[1]) || (middleArea[0] && middleArea[1]) || (rightArea[0] && rightArea[1])) {
                     strabismus = false;
                 } else {
                     strabismus = true;
+
+                    strabismusCount = Singleton.getInstance().getStrabimusC();
                     strabismusCount++; // Int 형
+
+                    Singleton.getInstance().setStrabimusC(strabismusCount);
 
                     long date = System.currentTimeMillis(); // 시간받아오기
                     Date nowDate = new Date(date); // Date 타입 변경
@@ -534,30 +570,32 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                     strabismusCountPref = PreferenceManager.getDefaultSharedPreferences(this);
                     strabismusCountEditor = strabismusCountPref.edit();
 
-                    setPreference(dateTemp+"strabismusCount", strabismusCount);
+                    setPreference(dateTemp + "strabismusCount", strabismusCount);
                 }
+
                 Log.e("Strabismus Count", String.valueOf(strabismus));
                 Log.e("Strabisums Count", String.valueOf(strabismusCount));
+
+                // 초기화
+                for (int k = 0; k < 2; k++) {
+                    leftCount[k] = 0;
+                    middleCount[k] = 0;
+                    rightCount[k] = 0;
+
+                    leftArea[k] = false;
+                    middleArea[k] = false;
+                    rightArea[k] = false;
+                }
 
                 count = 0;
 
                 return strabismus;
             }
 
-            // 초기화
-            for (int k = 0; k < 2; k++) {
-                leftCount[k] = 0;
-                middleCount[k] = 0;
-                rightCount[k] = 0;
-
-                leftArea[k] = false;
-                middleArea[k] = false;
-                rightArea[k] = false;
-            }
-
             count++;
         }
 
+        strabismus = false;
         return strabismus;
     }
 
@@ -573,28 +611,26 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, file); // 비트맵을 JPEG 으로 압축
             file.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             Log.e("error", e.getMessage() + e.getCause());
             e.printStackTrace();
         }
     }
 
-    private int getPreference(String id){
+    private int getPreference(String id) {
         int value = strabismusCountPref.getInt(id, -1);
 
         return value;
     }
 
-    private void setPreference(String id, int value){
+    private void setPreference(String id, int value) {
         int getValue = getPreference(id);
 
-        if(getValue == -1) {
+        if (getValue == -1) {
             strabismusCountEditor.putInt(id, value);
             strabismusCountEditor.commit();
-        }
-        else{
+        } else {
             strabismusCountEditor.clear();
             strabismusCountEditor.commit();
             // 기존 값 초기화

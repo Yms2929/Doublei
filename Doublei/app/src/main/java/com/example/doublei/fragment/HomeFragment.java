@@ -32,7 +32,6 @@ public class HomeFragment extends Fragment {
     public long startTime, endTime, betweenTime;
     public int accumulateTime;
 
-
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -42,15 +41,15 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         btnConnect = (Button) view.findViewById(R.id.connect);
+        btnEye = (ImageButton) view.findViewById(R.id.eye);
+
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
-
             public void onClick(View view) {
                 buttonEvent();
             }
         });
 
-        btnEye = (ImageButton) view.findViewById(R.id.eye);
         btnEye.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,24 +83,27 @@ public class HomeFragment extends Fragment {
             // 타임 종료
 
             endTime = System.currentTimeMillis();
-            betweenTime = (endTime - startTime)/1000; // 초
+            betweenTime = (endTime - startTime) / 1000; // 초
 
             long date = System.currentTimeMillis(); // 시간받아오기
             Date nowDate = new Date(date); // Date 타입 변경
             SimpleDateFormat sdf = new SimpleDateFormat("MM월 dd일"); // 월, 일 받아오기
             String dateTemp = sdf.format(nowDate);
 
-            SharedPreferences timePref = this.getActivity().getSharedPreferences(dateTemp,Context.MODE_PRIVATE);
+            SharedPreferences timePref = this.getActivity().getSharedPreferences(dateTemp, Context.MODE_PRIVATE);
             SharedPreferences.Editor timeEditor = timePref.edit();
-            String checkDate = timePref.getString(dateTemp,""); // key 값으로 dateTemp를 주고 그에 해당하는 Value를 가져옴. 없으면 공백("")
+            String checkDate = timePref.getString(dateTemp, ""); // key 값으로 dateTemp를 주고 그에 해당하는 Value를 가져옴. 없으면 공백("")
 
-            accumulateTime = Integer.valueOf(checkDate);
+            if(checkDate != null) {
+                accumulateTime = Integer.valueOf(checkDate);
+            }
             accumulateTime += Integer.valueOf(String.valueOf(betweenTime));
+
 
             timeEditor.putString(dateTemp, String.valueOf(accumulateTime));
             timeEditor.commit();
-            String test = timePref.getString(dateTemp,"");
-            Log.e("test",test);
+            String test = timePref.getString(dateTemp, "");
+            Log.e("test", test);
 
             Widget.updateWidget(context, widgetManager, appWidgetId);
 
@@ -127,14 +129,15 @@ public class HomeFragment extends Fragment {
             SimpleDateFormat sdf = new SimpleDateFormat("MM월 dd일"); // 월, 일 받아오기
             String dateTemp = sdf.format(nowDate);
 
-            SharedPreferences timePref = this.getActivity().getSharedPreferences(dateTemp,Context.MODE_PRIVATE);
+            SharedPreferences timePref = this.getActivity().getSharedPreferences(dateTemp, Context.MODE_PRIVATE);
             SharedPreferences.Editor timeEditor = timePref.edit();
-            String checkDate = timePref.getString(dateTemp,""); // key 값으로 dateTemp를 주고 그에 해당하는 Value를 가져옴. 없으면 공백("")
+            String checkDate = timePref.getString(dateTemp, ""); // key 값으로 dateTemp를 주고 그에 해당하는 Value를 가져옴. 없으면 공백("")
 
             // 오늘 첫 작동인 경우
-            if(checkDate.equals("")){
-                timeEditor.putString(dateTemp,"0"); // ID: 날짜 value = 0
+            if (checkDate.equals("")) {
+                timeEditor.putString(dateTemp, "0"); // ID: 날짜 value = 0
                 timeEditor.commit();
+                //accumulateTime = 0;
             }
             // 시간재기
             startTime = System.currentTimeMillis();
@@ -156,5 +159,41 @@ public class HomeFragment extends Fragment {
 
             getActivity().startService(new Intent(getActivity(), BackgroundService.class));
         }
+    }
+
+    @Override
+    public void onResume() {
+        if (value) {
+            btnEye.setImageResource(R.drawable.trans_eyebuttonoff);
+            btnConnect.setBackgroundResource(R.drawable.disconnect);
+        } else {
+            btnEye.setImageResource(R.drawable.trans_eyebuttonon);
+            btnConnect.setBackgroundResource(R.drawable.connect);
+        }
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        if (value) {
+            btnEye.setImageResource(R.drawable.trans_eyebuttonoff);
+            btnConnect.setBackgroundResource(R.drawable.disconnect);
+        } else {
+            btnEye.setImageResource(R.drawable.trans_eyebuttonon);
+            btnConnect.setBackgroundResource(R.drawable.connect);
+        }
+        super.onStart();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        if (value) {
+            btnEye.setImageResource(R.drawable.trans_eyebuttonoff);
+            btnConnect.setBackgroundResource(R.drawable.disconnect);
+        } else {
+            btnEye.setImageResource(R.drawable.trans_eyebuttonon);
+            btnConnect.setBackgroundResource(R.drawable.connect);
+        }
+        super.onActivityCreated(savedInstanceState);
     }
 }

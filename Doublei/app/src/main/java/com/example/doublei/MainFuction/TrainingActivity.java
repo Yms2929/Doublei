@@ -56,10 +56,9 @@ public class TrainingActivity extends AppCompatActivity implements CameraBridgeV
     private JavaCameraView mOpenCvCameraView;
     private ImageView Iv;
     private EditText editText;
-    Button capture;
-    Bitmap mBitmap;
-    Handler mHandler;
-    int countImages = 0;
+    private Button capture;
+    private Bitmap mBitmap;
+    private Handler mHandler;
 
     static {
         OpenCVLoader.initDebug();
@@ -115,7 +114,7 @@ public class TrainingActivity extends AppCompatActivity implements CameraBridgeV
                         Log.e(TAG, "Failed to load cascade. Exception thrown: " + e);
                     }
 
-//                    mOpenCvCameraView.setMaxFrameSize(1080, 920); // 카메라 최대크기 지정
+                    mOpenCvCameraView.setMaxFrameSize(1600, 1200);
                     mOpenCvCameraView.enableView(); // 카메라 촬영 가능
 
                 } break;
@@ -163,7 +162,7 @@ public class TrainingActivity extends AppCompatActivity implements CameraBridgeV
         });
 
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.java_surface_view); // 자바카메라 뷰
-        mOpenCvCameraView.setCameraIndex(frontCam); // 카메라 방향
+        mOpenCvCameraView.setCameraIndex(backCam); // 카메라 방향
         mOpenCvCameraView.setCvCameraViewListener(this);
 
         mPath = Environment.getExternalStorageDirectory() + "/Doublei/"; // 비트맵 이미지 저장할 경로
@@ -177,21 +176,6 @@ public class TrainingActivity extends AppCompatActivity implements CameraBridgeV
                     Canvas canvas = new Canvas();
                     canvas.setBitmap(mBitmap);
                     Iv.setImageBitmap(mBitmap);
-
-                    FileOutputStream file;
-                    try {
-                        text = editText.getText().toString();
-                        file = new FileOutputStream(mPath + text + ".jpg", true); // 경로에 파일 저장
-
-                        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, file); // 비트맵을 JPEG 으로 압축
-
-                        file.close();
-                    }
-                    catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        Log.e("error", e.getMessage() + e.getCause());
-                        e.printStackTrace();
-                    }
                 }
             }
         };
@@ -252,6 +236,11 @@ public class TrainingActivity extends AppCompatActivity implements CameraBridgeV
             Utils.matToBitmap(mat, mBitmap); // mat을 bitmap 형식으로 변환
 
             Imgproc.rectangle(mRgba, r.tl(), r.br(), FACE_RECT_COLOR, 3); // 사각형 그리기
+
+            Message msg = new Message();
+            String textTochange = "IMG";
+            msg.obj = textTochange;
+            mHandler.sendMessage(msg);
         }
 
         return mRgba;

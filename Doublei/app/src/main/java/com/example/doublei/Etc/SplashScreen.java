@@ -21,7 +21,7 @@ public class SplashScreen extends AppCompatActivity {
                 .withBackgroundColor(Color.parseColor("#074E72"))
                 .withLogo(R.drawable.ic_eye)
                 .withHeaderText("")
-                .withFooterText("Copyright 2017")
+                .withFooterText("Copyright@ 2017 Doublei All rights reserved")
                 .withBeforeLogoText("")
                 .withAfterLogoText("더블아이");
 

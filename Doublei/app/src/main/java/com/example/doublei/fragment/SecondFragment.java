@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.example.doublei.MainFuction.TrainingActivity;
 import com.example.doublei.R;
 import com.example.doublei.Setting.Alarm;
-import com.example.doublei.Setting.ChildPicture;
+import com.example.doublei.Setting.GalleryActivity;
 import com.example.doublei.Setting.Hospital;
 import com.example.doublei.Setting.PreviousRecord;
 
@@ -26,8 +26,8 @@ import com.example.doublei.Setting.PreviousRecord;
  */
 public class SecondFragment extends Fragment {
     ListView list;
-    String[] titles = {"얼굴 등록", "눈 사진", "기록 보기", "병원 찾기", "알람 설정", "거리 경고 메세지", "기타"};
-///    String[] titles = {"My profile","Eye Pictures","Record","Hospital","Alarm","Distane Message","Settings"};
+    String[] titles = {"얼굴 등록", "눈 사진", "이전 기록", "안과 찾기", "알람 설정", "경고 메세지", "기타"};
+//    String[] titles = {"My profile","Eye Pictures","Record","Hospital","Alarm","Distane Message","Settings"};
     int[] imgs = {R.drawable.ic_iconbaby,
             R.drawable.ic_iconeye,
             R.drawable.ic_calender,
@@ -35,6 +35,7 @@ public class SecondFragment extends Fragment {
             R.drawable.ic_alarmclock,
             R.drawable.ic_smartphone,
             R.drawable.settings};
+    boolean message = false;
 
     public SecondFragment() {
         // Required empty public constructor
@@ -57,7 +58,7 @@ public class SecondFragment extends Fragment {
                         startActivity(new Intent(getActivity(), TrainingActivity.class));
                         break;
                     case 1:
-                        startActivity(new Intent(getActivity(), ChildPicture.class));
+                        startActivity(new Intent(getActivity(), GalleryActivity.class));
                         break;
                     case 2:
                         startActivity(new Intent(getActivity(), PreviousRecord.class));
@@ -106,12 +107,13 @@ public class SecondFragment extends Fragment {
     }
 
     public void PhoneDistance() {
-        boolean message = false;
         if (message) {
             Toast.makeText(getActivity(), "경고 메세지가 활성화 되었습니다", Toast.LENGTH_SHORT).show();
+            message = false;
         }
         else if (!message) {
             Toast.makeText(getActivity(), "경고 메세지가 비활성화 되었습니다", Toast.LENGTH_SHORT).show();
+            message = true;
         }
     }
 }

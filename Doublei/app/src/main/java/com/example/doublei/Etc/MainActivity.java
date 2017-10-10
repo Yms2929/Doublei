@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 //            Intent intent = new Intent(this, ChildPicture.class);
 //            startActivity(intent);
 //        }
-        toolbar = (Toolbar)findViewById(R.id.main_toolbar);
+//        toolbar = (Toolbar)findViewById(R.id.main_toolbar);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
         initUI();
     }
 
