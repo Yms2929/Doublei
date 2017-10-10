@@ -31,16 +31,15 @@ public class GalleryActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQ_CODE_SELECT_IMAGE) {
-            if(resultCode==Activity.RESULT_OK)
-            {
+        if (requestCode == REQ_CODE_SELECT_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
                 try {
                     //Uri에서 이미지 이름을 얻어온다.
                     String name_Str = getImageNameToUri(data.getData());
 
                     //이미지 데이터를 비트맵으로 받아온다.
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    imageView = (ImageView)findViewById(R.id.eyeImage);
+                    imageView = (ImageView) findViewById(R.id.eyeImage);
 
                     //배치해놓은 ImageView에 set
                     imageView.setImageBitmap(image_bitmap);
@@ -59,16 +58,15 @@ public class GalleryActivity extends Activity {
         }
     }
 
-    public String getImageNameToUri(Uri data)
-    {
-        String[] proj = { MediaStore.Images.Media.DATA };
+    public String getImageNameToUri(Uri data) {
+        String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(data, proj, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 
         cursor.moveToFirst();
 
         String imgPath = cursor.getString(column_index);
-        String imgName = imgPath.substring(imgPath.lastIndexOf("/")+1);
+        String imgName = imgPath.substring(imgPath.lastIndexOf("/") + 1);
 
         return imgName;
     }

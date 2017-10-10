@@ -223,9 +223,8 @@ public class FirstFragment extends Fragment {
                 strabismusCount = 0;
             }
             if (strabismusCount >= 6) {
-                strabismusCount = strabismusCount/6;
+                strabismusCount = strabismusCount / 6;
             }
-            // if 문으로 strabismusCount / 6 해서 프레임수로 나눠줘야 됨.
 
             newlineValues[i + 6] = Float.valueOf(strabismusCount);
         }
@@ -247,7 +246,7 @@ public class FirstFragment extends Fragment {
             strDate = sdf.format(calculatedDate);
 
             newBarVlaues[i + 6] = String.valueOf(Integer.parseInt(strDate)) + "일";
-//            newBarValues[i + 6] = Float.valueOf(strDate);
+            // newBarValues[i + 6] = Float.valueOf(strDate);
         }
         return newBarVlaues;
     }
@@ -275,12 +274,11 @@ public class FirstFragment extends Fragment {
             time = Integer.valueOf(checkDate);
             if (time >= 60) {
                 time = time / 60;
-                if(time>=55){
+                if (time >= 55) {
                     View v = null;
                 }
                 newBarValues[i + 6] = Float.valueOf(time);
-            }
-            else {
+            } else {
                 time = 0;
                 newBarValues[i + 6] = Float.valueOf(time);
             }

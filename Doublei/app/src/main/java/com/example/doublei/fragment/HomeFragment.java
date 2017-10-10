@@ -92,13 +92,14 @@ public class HomeFragment extends Fragment {
 
             SharedPreferences timePref = this.getActivity().getSharedPreferences(dateTemp, Context.MODE_PRIVATE);
             SharedPreferences.Editor timeEditor = timePref.edit();
+
             String checkDate = timePref.getString(dateTemp, ""); // key 값으로 dateTemp를 주고 그에 해당하는 Value를 가져옴. 없으면 공백("")
 
-            if(checkDate != null) {
+            if (checkDate != null) {
                 accumulateTime = Integer.valueOf(checkDate);
             }
-            accumulateTime += Integer.valueOf(String.valueOf(betweenTime));
 
+            accumulateTime += Integer.valueOf(String.valueOf(betweenTime));
 
             timeEditor.putString(dateTemp, String.valueOf(accumulateTime));
             timeEditor.commit();
@@ -137,7 +138,9 @@ public class HomeFragment extends Fragment {
             if (checkDate.equals("")) {
                 timeEditor.putString(dateTemp, "0"); // ID: 날짜 value = 0
                 timeEditor.commit();
+
                 //accumulateTime = 0;
+                accumulateTime = 0;
             }
             // 시간재기
             startTime = System.currentTimeMillis();

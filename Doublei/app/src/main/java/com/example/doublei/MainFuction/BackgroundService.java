@@ -298,9 +298,7 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
             mGrayT = mGray.t();
             Core.flip(mGray.t(), mGrayT, -1);
             Imgproc.resize(mGrayT, mGrayT, mGray.size());
-        }
-
-        else if (cameraState == backCam) {
+        } else if (cameraState == backCam) {
             mRgbaT = mRgba.t();
             Core.flip(mRgba.t(), mRgbaT, 1);
             Imgproc.resize(mRgbaT, mRgbaT, mRgba.size());
@@ -556,11 +554,10 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                     strabismus = false;
                 } else {
                     strabismus = true;
-
-                    strabismusCount = Singleton.getInstance().getStrabimusC();
+                    strabismusCount = Singleton.getInstance().getStrabimusCount();
                     strabismusCount++; // Int 형
 
-                    Singleton.getInstance().setStrabimusC(strabismusCount);
+                    Singleton.getInstance().setStrabimusCount(strabismusCount);
 
                     long date = System.currentTimeMillis(); // 시간받아오기
                     Date nowDate = new Date(date); // Date 타입 변경
