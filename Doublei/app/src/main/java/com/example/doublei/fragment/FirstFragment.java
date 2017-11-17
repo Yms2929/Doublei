@@ -91,7 +91,7 @@ public class FirstFragment extends Fragment {
     private void initializeData() { //Textview 초기화
         Graphs = new ArrayList<>();
         Graphs.add(new GraphInformation("사시 의심 횟수", ""));
-        Graphs.add(new GraphInformation("스마트폰 사용 시간(분)", "주의"));
+        Graphs.add(new GraphInformation("스마트폰 사용 시간(분)", "안전"));
     }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
@@ -133,7 +133,7 @@ public class FirstFragment extends Fragment {
 
                 mholder.graphName.setText(item.getGraphName());
                 mholder.safeDangerMessage.setText(item.getSafeDangerMessage());
-                mholder.safeDangerMessage.setTextColor(Color.RED);
+                mholder.safeDangerMessage.setTextColor(Color.GREEN);
             } else if (holder.getItemViewType() == TYPE_Line) {
                 ViewHolderLine mholder = (ViewHolderLine) holder;
                 mholder.charterLineLabelX.setStickyEdges(true);

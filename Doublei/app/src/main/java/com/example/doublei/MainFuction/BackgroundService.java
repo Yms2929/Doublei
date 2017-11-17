@@ -78,7 +78,6 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
     private JavaCameraView mOpenCvCameraView;
     private int count = 0;
     private int imageCount = 0;
-    private int second = 0;
     public int[] leftCount = new int[2];
     public int[] middleCount = new int[2];
     public int[] rightCount = new int[2];
@@ -178,7 +177,6 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 
                     mOpenCvCameraView.setMaxFrameSize(cameraWidth, cameraHeight); // 카메라 최대크기 지정
                     mOpenCvCameraView.enableView(); // 카메라뷰 활성화
-
                 }
                 break;
                 default: {
@@ -204,9 +202,9 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, PixelFormat.TRANSLUCENT); // 레이아웃
 
         mOpenCvCameraView = (JavaCameraView) mPopupView.findViewById(R.id.java_surface_view);
-        mOpenCvCameraView.setCameraIndex(backCam);
+        mOpenCvCameraView.setCameraIndex(frontCam);
         mOpenCvCameraView.setCvCameraViewListener(this);
-        cameraState = backCam;
+        cameraState = frontCam;
 
         mParams.width = cameraWidth;
         mParams.height = cameraHeight;
@@ -394,9 +392,12 @@ public class BackgroundService extends Service implements CameraBridgeViewBase.C
 //                SaveBmp(resultImage, mPath); // 내부저장소에 눈 이미지 저장
 
                 if (Strabismus(resultImage)) { // 사시가 발견되면
-//                    SaveBmp(resultImage, mPath); // 내부저장소에 눈 이미지 저장
+                    SaveBmp(resultImage, mPath); // 내부저장소에 눈 이미지 저장
                     SaveBmp(eyeRgbImage, mPath);
-                    StrabismusNotification();
+
+                    if (strabismus) {
+//                        StrabismusNotification();
+                    }
                 }
             }
         }
