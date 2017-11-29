@@ -1,9 +1,12 @@
 package com.example.doublei.Etc;
 
+import android.Manifest;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -35,12 +38,26 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        if(extras != null){
+        if (extras != null) {
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
 //        setSupportActionBar(toolbar);
         initUI();
+
+        // SDK 23이상 일때 권한요청
+        int permissionCamera = ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA);
+        int permissionReadStorage = ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permissionWriteStorage = ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//        int permissionAlertWindow = ActivityCompat.checkSelfPermission(getApplicationContext(), Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+
+        if (permissionCamera != PackageManager.PERMISSION_GRANTED || permissionReadStorage != PackageManager.PERMISSION_GRANTED || permissionWriteStorage != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+
+//        if (permissionAlertWindow != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, new String[]{Settings.ACTION_MANAGE_OVERLAY_PERMISSION}, 1);
+//        }
     }
 
     private void initUI() {
