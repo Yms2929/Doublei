@@ -16,8 +16,7 @@ Doublei (더블아이)
 > #### 4. 그래프를 통한 데이터 시각화
 
 ## 4. 애플리케이션 이미지
-![home](C:\Android\Doublei\Doublei\image\home.png)
-
+<img src="./Doublei/image/home.png" width="30%"> >>> <img src="./Doublei/image/distance.png" width="30%"> >>> <img src="./Doublei/image/graph.jpg" width="30%">
 
 ## 5. 기대 효과
 - 영유아 사시를 조기에 발견하여 병원으로 유도하고 사시 치료를 받게 하여 치료 확률을 높일 수 있습니다.
